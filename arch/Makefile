@@ -9,11 +9,8 @@ OBJS = $(patsubst %.c,%.o,$(SRCS))
 #endif
 
 
-all: dummy
+all:
+	$(MAKE) -C $(ARCH)
 
-
-
-
-dummy:
 
 

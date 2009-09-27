@@ -1,6 +1,7 @@
 #Makefile for the Ganoid kernel
 
 VERSION = 0.0.1
+ARCH    = i386
 
 
 BIN = ganoid-$(VERSION)
