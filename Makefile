@@ -1,19 +1,59 @@
 #Makefile for the Ganoid kernel
 
-VERSION = 0.0.1
-ARCH    = i386
+export
+
+OUTDIR        := bin
+
+VERSION       := 0.0.1
+ARCH          := i386
+LINKER_SCRIPT := arch/$(ARCH)/kernel/ganoid.ld
+
+VPATH         := arch/$(ARCH)/drivers:testcases:arch/$(ARCH)/boot: \
+                 arch/$(ARCH)/lib:arch/$(ARCH)/mm:arch/$(ARCH)/kernel    \
+                 :lib:fs:mm:kernel:init:sound:$(OUTDIR)
+
+SRCS          := common.c monitor.c vga.c vsprintf.c clib.c     \
+                 gdt.c idt.c isr.c apic.c timer.c paging.c
+
+ASMSRCS       := boot.S kernel.S vectors.S
+
+OBJS          := $(patsubst %.c,%.o,$(SRCS))
+ASMOBJS       := $(patsubst %.S,%.o,$(ASMSRCS))
+
+DEPENDS	      += $(patsubst %.c,%.d,$(SRCS))
+DEPENDS	      += $(patsubst %.S,%.d,$(ASMSRCS))
+
+BIN           := ganoid-$(VERSION)
+CC            := gcc -g -c
+CPPFLAGS      := -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0
 
 
-BIN = ganoid-$(VERSION)
-CC = gcc
-CPPFLAGS = -Wall -I../include -fno-stack-protector -ffreestanding -O0
+#.DEFAULT_GOAL = $(BIN)
 
-SUBDIRS = kernel arch drivers fs init lib mm sound
+$(BIN): $(OBJS) $(ASMOBJS) Makefile 
+	@printf "\n\nBuilding final executable. Date: "
+	@date 
+	@printf "\n"
+	@cp $(LINKER_SCRIPT) bin
+	$(MAKE) -C bin $(BIN)
 
-$(BIN): dummy ganoidsubdirs
 
-ganoidsubdirs: dummy
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i; done
 
-dummy:
+%.o: %.c
+	$(CC) $(CPPFLAGS) -o $(OUTDIR)/$@ $<
 
+%.o: %.S
+	$(CC) $(CPPFLAGS) -o $(OUTDIR)/$@ $<
+
+#%.d: %.c
+#	@set -e; rm -f $@; \
+#	$(CC) -MM $(CPPFLAGS) $< > $@.$$$$; \
+#	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
+#	rm -f $@.$$$$
+
+clean:
+	rm -vf $(OUTDIR)/*.o $(OUTDIR)/*.d $(OUTDIR)/$(BIN) 
+
+
+#common.o common.d: common.c
+#include $(DEPENDS)
