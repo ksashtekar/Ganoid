@@ -54,6 +54,7 @@ _start:
 // we will be using ELF file ... so no need of the additional fields
 
 multiboot_entry:
+	cli
 	// init the stack pointer
 	movl $(stack + STACK_SIZE), %esp
 
@@ -66,6 +67,8 @@ multiboot_entry:
 	// push the magic value
 	pushl %eax
 
+	// bss space has been init'ed by the good bootloader	
+	
 	// now enter the C main function
 	call EXT_C(cmain)
 
@@ -73,6 +76,7 @@ multiboot_entry:
 	//pushl $halt_message
 	//call EXT_C(printf)
 loop:
+	cli
 	hlt
 	jmp loop
 

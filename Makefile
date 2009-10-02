@@ -12,7 +12,7 @@ VPATH         := arch/$(ARCH)/drivers:testcases:arch/$(ARCH)/boot: \
                  arch/$(ARCH)/lib:arch/$(ARCH)/mm:arch/$(ARCH)/kernel    \
                  :lib:fs:mm:kernel:init:sound:./$(OUTDIR)
 
-SRCS          := common.c monitor.c vga.c vsprintf.c clib.c     \
+SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c
 
 ASMSRCS       := boot.S kernel.S vectors.S

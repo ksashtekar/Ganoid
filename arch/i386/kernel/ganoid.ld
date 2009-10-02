@@ -20,8 +20,9 @@ SECTIONS
 
 	.bss  : 
 	{
-	  bss = .; _bss = .; __bss = .;	
+	  bss = .; _bss = .; __bss = .;	_bss_start = .;
 	  *(.bss)
+	  _bss_end = .;
 	  . = ALIGN(4096); 
 	} 
 end = .;_end = .;__end = .;    

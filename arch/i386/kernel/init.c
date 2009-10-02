@@ -1,3 +1,4 @@
+//#include <ktype.h>
 #include <common.h>
 #include <vga.h>
 #include <tests.h>
@@ -9,23 +10,27 @@
 #include <apic.h>
 #include <timer.h>
 #include <paging.h>
+#include <sysinfo.h>
+#include <init.h>
 
 
 void my_rtc_irq_handler (void);
 void my_page_fault_handler (void);
 
+struct multiboot_info multiboot_info;
+
 int i = 10;
 
-void cmain ()
+void cmain (u32 magic_val, u32 *multiboot_info)
 {
 	unsigned char val;
-	//int x = 0, y = 0;
-
 	int *p;
 
 	vga_clearscreen ();
+	read_multiboot_information (multiboot_info);
 
-	printf ("GDT init in progress !\n");
+
+	//printf ("GDT init in progress !\n");
 	init_GDT ();
 	printf ("IDT init in progress !\n");
 	init_Interrupt_Descriptor_Table ();
@@ -91,4 +96,16 @@ void irq0_handler (void);
 void irq0_handler (void)
 {
 	printf ("into irq0 handler");
+}
+
+
+
+/* Parse the multiboot information.  
+ * 
+ */
+void read_multiboot_information (u32 *multiboot_info_ptr)
+{
+	// read in the entire struct
+	memcpy (&multiboot_info, multiboot_info_ptr, sizeof(struct multiboot_info));
+tbc ..
 }

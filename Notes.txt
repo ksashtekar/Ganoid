@@ -1,0 +1,3 @@
+The boot disk needs to be 'setup' again by grub when we replace the stage2 ... (note stored in google docs) also at 
+http://www.julienlecomte.net/blog/2007/07/3/
+
