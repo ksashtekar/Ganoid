@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <kernel.h>
-#include <ktype.h>
+#include <ktypes.h>
 
 #include <vga.h>
 
@@ -60,7 +60,7 @@ char * itoa (int value, char *str, int base, int unsignedvalue, int fieldwidth)
       fillbytes = fieldwidth - no_of_digits;
 
     for (;fillbytes--; str++)
-      *str = ' ';
+      *str = '0';
   }
 
   // calculate the divisor

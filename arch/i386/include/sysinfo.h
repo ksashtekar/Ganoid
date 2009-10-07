@@ -1,7 +1,10 @@
 #ifndef SYSINFO_H_
 #define SYSINFO_H_
 
-#include <ktype.h>
+#include <ktypes.h>
+
+
+
 
 /*
 The format of the Multiboot information structure (as defined so far) follows:
@@ -89,6 +92,39 @@ struct multiboot_info
         u16 vbe_interface_seg;
         u16 vbe_interface_off;
         u16 vbe_interface_len;
-};
+} __attribute__((packed));
+
+
+// this is the format of a single node corresponding to a
+// homogeneous region of address space. this is the format
+// it which it is given to us by the multiboot compliant
+// bootloader. 
+struct bios_addr_map
+{
+	u32 node_size; // in bytes
+	u32 base_addr_low;
+	u32 base_addr_high;
+	u32 length_low;
+	u32 length_high;
+	u32 type;
+} __attribute__((packed));
+
+struct bios_drive_info
+{
+	u32 size;
+	u8 drive_no;
+	u8 drive_mode;
+	u16 drive_cylinders;
+	u8 drive_heads;
+	u8 drive_sectors;
+	u16 *start_port_array;
+} __attribute__((packed));
+
+
+static void print_multiboot_information (void);
 
 #endif // SYSINFO_H_
+
+
+
+

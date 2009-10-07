@@ -1,6 +1,6 @@
 #include <vga.h>
 #include <common.h>
-#include <ktype.h>
+#include <ktypes.h>
 
 char cursor_x, cursor_y;
 const int  max_x = 80, max_y = 25;

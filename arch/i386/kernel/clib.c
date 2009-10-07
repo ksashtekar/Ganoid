@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <vga.h>
-#include <ktype.h>
+#include <ktypes.h>
 #include <clib.h>
 #include <string.h>
 
@@ -98,6 +98,9 @@ size_t strlen (const char *s)
 	while (*s++) i++;
 	return i;
 }
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-#include <ktype.h>
+#include <ktypes.h>
 #include <kernel.h>
 #include <isr.h>
 #include <idt.h>

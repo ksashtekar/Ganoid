@@ -13,7 +13,8 @@ VPATH         := arch/$(ARCH)/drivers:testcases:arch/$(ARCH)/boot: \
                  :lib:fs:mm:kernel:init:sound:./$(OUTDIR)
 
 SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
-                 gdt.c idt.c isr.c apic.c timer.c paging.c
+                 gdt.c idt.c isr.c apic.c timer.c paging.c  \
+	         sysinfo.c kdebug.c         
 
 ASMSRCS       := boot.S kernel.S vectors.S
 
@@ -25,7 +26,7 @@ DEPENDS	      += $(patsubst %.S,.%.d,$(ASMSRCS))
 
 
 BIN           := ganoid-$(VERSION)
-CC            := gcc -g -c
+CC            := gcc -g -c -std=gnu99 
 CPPFLAGS      := -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0
 
 

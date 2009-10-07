@@ -1,4 +1,4 @@
-//#include <ktype.h>
+#include <ktypes.h>
 #include <common.h>
 #include <vga.h>
 #include <tests.h>
@@ -17,7 +17,7 @@
 void my_rtc_irq_handler (void);
 void my_page_fault_handler (void);
 
-struct multiboot_info multiboot_info;
+
 
 int i = 10;
 
@@ -100,12 +100,3 @@ void irq0_handler (void)
 
 
 
-/* Parse the multiboot information.  
- * 
- */
-void read_multiboot_information (u32 *multiboot_info_ptr)
-{
-	// read in the entire struct
-	memcpy (&multiboot_info, multiboot_info_ptr, sizeof(struct multiboot_info));
-tbc ..
-}
