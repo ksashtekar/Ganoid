@@ -13,6 +13,18 @@ void kernel_fault (const char *str)
 }
 
 
+void data_dump_byte (void *start_addr)
+{
+	data_dump (start_addr, ~0, EDUMP_BYTE, EDUMP_HEX);
+}
+
+void data_dump_word (void *start_addr)
+{
+	data_dump (start_addr, ~0, EDUMP_WORD, EDUMP_HEX);
+}
+
+
+
 void data_dump (void *start_addr, void *end_addr, 
 		enum kdebug_dump_format_width width, 
 		enum kdebug_dump_format_type type)
@@ -25,7 +37,6 @@ void data_dump (void *start_addr, void *end_addr,
 	// round-off start address to 16 bytes boundary
 	addr_print = ((u32)start_addr & (u32)0xFFFFFFF0);
 	misalign_offset = (u8)((u32)start_addr & 0xF);
-	printf ("--%d\n", misalign_offset);
 
 	switch (width){
 	case EDUMP_BYTE:

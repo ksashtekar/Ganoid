@@ -2,8 +2,8 @@
 #define VGA_H_
 
 #define VMEM_BASE 0x000B8000
+#define KTAB_WIDTH  4
 
-#define TAB_WIDTH 4
 
 
 #define SEQUENCER_ADDR_REG 0x3C4
@@ -16,6 +16,7 @@
 
 #define ATTRB_MISC_OUTPUT_WR 0x3C2
 #define ATTRB_MISC_OUTPUT_RD 0x3CC
+
 
 void vga_clearscreen (void);
 
@@ -41,6 +42,10 @@ int SetBit (unsigned short aPortAddressIndex,
 	    unsigned short aBitNumber,
 	    int aValue);
 */
+#define SCREEN_WIDTH 80
+#define SCREEN_HEIGHT 25
+
+
 #endif  // VGA_H_
 
 

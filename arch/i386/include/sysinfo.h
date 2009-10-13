@@ -123,6 +123,15 @@ struct bios_drive_info
 
 static void print_multiboot_information (void);
 
+enum addr_type
+	{
+		RAM
+	};
+
+
+void display_boot_progress (const char *message, bool result);
+char* columnlize_string (const char *istr, char *ostr, int screen_width, 
+			 int left_margin, int right_margin, int fillbyte);
 #endif // SYSINFO_H_
 
 

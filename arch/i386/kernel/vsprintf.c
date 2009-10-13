@@ -15,6 +15,8 @@
 
 #define isdigit(c) ((c >= '0') && (c <= '9'))
 
+int debug_printf = 0;
+
 
 // ignoring base for now.
 char * itoa (int value, char *str, int base, int unsignedvalue, int fieldwidth)
@@ -131,9 +133,13 @@ int vsprintf (char *buf, const char *fmt, va_list vl)
     conv_specifier = get_conv_specifier (fmt);
     fmt++;
     realize_string (&buf, flags, fieldwidth, precision, length_modifier, conv_specifier, &vl);
+    fieldwidth = 0;
+    precision = 0; 
+    length_modifier = 0; 
+    conv_specifier = 0;
     //vga_puts (mbuf);
   }
-  return 0; 
+  return strlen (buf); 
 }
 
 
@@ -143,7 +149,10 @@ void realize_string (char **buf, int flags, int fieldwidth,
   char *mbuf;
   char *ch;
   int val = 0;
-  char str[100];
+#define STR_SIZE 100
+  char str[STR_SIZE];
+  memset (str, 0, STR_SIZE);
+#undef STR_SIZE
   int i;
 
 
@@ -334,7 +343,6 @@ int printf (const char *fmt, ...)
   char pbuf[PRINTF_BUFFER_SIZE];
 
   va_start (vl, fmt);
-
   retval = vsprintf (pbuf, fmt, vl);
   va_end (vl);
 

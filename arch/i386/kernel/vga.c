@@ -3,7 +3,8 @@
 #include <ktypes.h>
 
 char cursor_x, cursor_y;
-const int  max_x = 80, max_y = 25;
+const int  max_x = SCREEN_WIDTH, max_y = SCREEN_HEIGHT;
+const int KTabWidth = KTAB_WIDTH;
 
 void vga_clearscreen ()
 {
@@ -90,7 +91,7 @@ void vga_putc (char c)
       move_cursor (cursor_x, cursor_y);
     break;
   case '\t':
-    cursor_x +=  4;
+    cursor_x +=  KTabWidth;
     if (cursor_x >= 80){
       cursor_x = 0;
       cursor_y++;

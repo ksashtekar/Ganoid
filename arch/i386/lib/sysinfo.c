@@ -3,6 +3,8 @@
 #include <kdebug.h>
 #include <sysinfo.h>
 #include <kernel.h>
+#include <clib.h>
+#include <vga.h>
 
 
 #define ADDR_MAP_NO_OF_NODES 20
@@ -13,8 +15,17 @@ static struct multiboot_info multiboot_info;
 static u8 bios_addr_map_buffer[sizeof(struct bios_addr_map)*ADDR_MAP_NO_OF_NODES];
 static u8 bios_drive_info_buffer[sizeof(struct bios_drive_info)*BIOS_DRIVE_INFO_NO_OF_NODES];
 
+// ~temp
+extern int debug_printf;
+
+
 /* Parse the multiboot information.  
  * 
+ * The information about the system hardware environment
+ * provided by multiboot needs to be saved somewhere as it
+ * may get destroyed in due course of booting. Also, we need
+ * to parse it and make it available to anybody needing
+ * it. We will parse it here.
  */
 void read_multiboot_information (u32 *multiboot_info_ptr)
 {
@@ -36,10 +47,11 @@ void read_multiboot_information (u32 *multiboot_info_ptr)
 		memcpy (bios_drive_info_buffer, (u8*)multiboot_info.drives_addr,
 			multiboot_info.drives_length);
 
-	//for (int i = 0; i < (sizeof(multiboot_info)/4); i++)
-	//printf ("%d: %x\n", i*4, *((u32*)&multiboot_info+i));
 
-	print_multiboot_information ();
+	display_boot_progress ("Initializing memory sub-system", 1);
+	display_boot_progress ("Sending SIGKILL to all processes", 0);
+	display_boot_progress ("The information about the system hardware environment provided by multiboot needs to be saved somewhere as it", 0); 
+	//print_multiboot_information ();
 
 	while (1);
 }
@@ -59,11 +71,6 @@ static void print_multiboot_information (void)
 		"unknown medium\0"
 	};
 	u32 drive;
-
-	char array[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-	data_dump ((void*)0x16, (void*)0x1b, EDUMP_HALFWORD, EDUMP_HEX);
-	while (1); 
 
 	printf ("Amount of lower memory: ");
 	if (flags & 0x01) {
@@ -100,11 +107,6 @@ static void print_multiboot_information (void)
 	else
 		printf ("Command line data not present\n");
 
-
-	printf ("kaustubh..%s\n", drivestr[0]);
-	while (1);
-
-
 	printf ("Module information NOT parsed for now\n");
 	printf ("Symbol table information not parsed\n");
 
@@ -115,15 +117,31 @@ static void print_multiboot_information (void)
 		bios_addr_map = (struct bios_addr_map*)bios_addr_map_buffer;
 		while (size){
 			i++;
-			printf ("******* Node %d ********\n", i);
-			printf ("Base address : 0x%x%x\n", bios_addr_map->base_addr_high, 
+			//printf ("******* Node %d ********\n", i);
+			//printf ("Node address : 0x%x\n", bios_addr_map);
+			//printf ("Node size    : %d\n", bios_addr_map->node_size);
+			printf ("0x%x%8x", bios_addr_map->base_addr_high, 
 				bios_addr_map->base_addr_low);
-			printf ("Length       : 0x%x%x bytes\n", bios_addr_map->length_high,
-				bios_addr_map->length_low);
-			printf ("Type         : %x\n", bios_addr_map->type);
-			size -= bios_addr_map->node_size;
+			printf (", 0x%x%8x ", bios_addr_map->length_high,
+				bios_addr_map->length_low, bios_addr_map->length_low/1000);
+			if (bios_addr_map->length_low/1000000000)
+				printf ("(%d) GB", bios_addr_map->length_low/1000000000);
+			else if (bios_addr_map->length_low/1000000)
+				printf ("(%d) MB", bios_addr_map->length_low/1000000);
+			else if (bios_addr_map->length_low/1000)
+				printf ("(%d) KB", bios_addr_map->length_low/1000);
+			else
+				printf ("(%d) Bytes", bios_addr_map->length_low);
+
+			if (bios_addr_map->type == 1)
+				printf (", RAM\n");
+			else
+				printf (", Reserved\n");
+			
+			size -= (bios_addr_map->node_size + sizeof (bios_addr_map->node_size));
 			bios_addr_map = (struct bios_addr_map*)((u32)bios_addr_map + 
-								  bios_addr_map->node_size);
+								  bios_addr_map->node_size + 
+								sizeof(bios_addr_map->node_size) );
 		}
 	}
 
@@ -133,22 +151,30 @@ static void print_multiboot_information (void)
 
 		u32 i = 0;
 		u32 size = multiboot_info.drives_length;
+		//printf ("total size: %d\n", size);
 		while(size){
-			printf ("********** Node %d *********\n", i++);
-			printf ("Drive number: %d\n", bios_drive_info->drive_no);
-			printf ("Drive Mode: ");
-			if (bios_drive_info->drive_mode == 0) printf ("CHS\n");
-			else if (bios_drive_info ->drive_mode == 1) printf ("LBA mode\n");
+			i++;
+			//printf ("********** Node %d *********\n", i++);
+			//printf ("%d", bios_drive_info->size);
+			printf ("%d", bios_drive_info->drive_no);
+			if (bios_drive_info->drive_mode == 0) printf (", CHS");
+			else if (bios_drive_info ->drive_mode == 1) printf (", LBA mode");
+			else printf (", Unknown mode");
 			
-			printf ("Drive cylinders: %d\n", bios_drive_info->drive_cylinders);
-			printf ("Drive Heads:     %d\n", bios_drive_info->drive_heads);
-			printf ("Drive Sectors    %d\n", bios_drive_info->drive_sectors);
+			printf (", %d-C", bios_drive_info->drive_cylinders);
+			printf (", %d-H", bios_drive_info->drive_heads);
+			printf (", %d-S", bios_drive_info->drive_sectors);
 			u16 *start_port_array = &bios_drive_info->start_port_array;
 			while (*start_port_array){
-				printf ("Port: %d\n", *start_port_array);
+				printf (", %d", *start_port_array);
 				start_port_array++;
 			}
-			size = size - bios_drive_info->size;
+			//if (i == 2)while (1);
+
+			printf ("\n");;
+
+			size -= bios_drive_info->size;
+			//printf  ("size remaining %d", size);
 		}
 	}
 
@@ -163,6 +189,83 @@ static void print_multiboot_information (void)
 }
 
 
+void display_boot_progress (const char *message, bool result)
+{
+#define MAX_STR_LEN 200
+	char column_str[MAX_STR_LEN];
+#undef MAX_STR_LEN
+	char *ok_str = "OK";
+	char *fail_str = "FAIL";
+	char *pstr = fail_str;
+	const int right_margin = 8;
+	const left_margin = 1;
+	columnlize_string (message, column_str, SCREEN_WIDTH, 
+			   left_margin, right_margin, '.');
+
+	printf ("%s", column_str);
+	
+	if (result)
+		pstr = ok_str;
+	
+	for (int i = 0; i < (right_margin - strlen(pstr) - 2); i++)
+		printf (".");
+
+	printf ("[%s]", pstr);
+
+	//	while (1);
+}
+
+
+// str should be of enough length to fit entire columnized
+// string. 
+// will try to put tabs if possible instead of space to save space
+char* columnlize_string (const char *istr, char *ostr, int screen_width, 
+			 int left_margin, int right_margin, int fillbyte)
+{
+	int tabs = left_margin/KTAB_WIDTH;
+	int leftfillspace = left_margin%KTAB_WIDTH;
+	int i = -1;
+	int single_line_str_len = screen_width - (left_margin + right_margin);
+	if (single_line_str_len < 1)
+		return NULL;
+
+	// temptest
+	//single_line_str_len = 3;
+
+	char *obuf;
+	obuf = ostr;
+
+	int r = 0;
+
+	int ip = 0, op = 0;
+
+	for (ip = 0, op = 0; *istr; ){
+		if (left_margin) {
+			for (int i = 0; i < tabs; i++) sprintf(ostr++, "\t");
+			for (int i = 0; i < leftfillspace; i++) sprintf(ostr++, " ");
+		}
+
+		for (r = 0; (r < single_line_str_len) && (*istr) && (*istr != '\n'); r++)
+			*ostr++ = *istr++;
+
+		if (*istr == '\n')
+			istr++;
+
+		if (!*istr)
+			break; // we are done with
+
+		*ostr = '\n';
+		ostr++;
+	}
+
+	if (r < single_line_str_len)
+		for (int i = 0; i < (single_line_str_len - r); i++, ostr++)
+			*ostr = fillbyte;
+
+	*ostr = 0;
+
+	return obuf;
+}
 
 
 

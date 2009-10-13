@@ -91,6 +91,14 @@ char *strcpy(char *dest, const char *src)
 }
 
 
+char *strncpy (char *dest, const char *src, size_t n)
+{
+	int i = -1;
+	for(i = n; (*dest = *src) && i; i--, src++, dest++){}
+	return (n - i);
+}
+
+
 
 size_t strlen (const char *s)
 {
