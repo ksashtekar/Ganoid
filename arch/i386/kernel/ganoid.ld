@@ -4,7 +4,7 @@ SECTIONS
 {
 	.text 0x100000 :  
 	{ 
-	  code = .; _code = .; __code = .;
+	  code = .; _code = .; __code = .;__start_ = .;
 	  boot.o(.text)
 	  *(.text)
 	  . = ALIGN(4096); 
@@ -25,5 +25,5 @@ SECTIONS
 	  _bss_end = .;
 	  . = ALIGN(4096); 
 	} 
-end = .;_end = .;__end = .;    
+end = .;_end = .;__end = .;__end_ = .;    
 }

@@ -1,3 +1,11 @@
+/*********************************************************************
+ * This file implements the parsing of the multiboot information 
+ * structures. Since this to be done right at system startup we neither
+ * kernel memory allocator nor the bootmem allocator. Thus we 
+ * have to use memory in quite primitive way.
+ *
+ ********************************************************************/
+
 #include <ktypes.h>
 #include <string.h>
 #include <kdebug.h>
@@ -48,12 +56,16 @@ void read_multiboot_information (u32 *multiboot_info_ptr)
 			multiboot_info.drives_length);
 
 
-	display_boot_progress ("Initializing memory sub-system", 1);
-	display_boot_progress ("Sending SIGKILL to all processes", 0);
-	display_boot_progress ("The information about the system hardware environment provided by multiboot needs to be saved somewhere as it", 0); 
 	//print_multiboot_information ();
 
-	while (1);
+	//while (1);
+}
+
+
+const char* get_bios_addr_buffer (int *size)
+{
+	*size = multiboot_info.mmap_length;
+	return bios_addr_map_buffer;
 }
 
 
@@ -133,7 +145,7 @@ static void print_multiboot_information (void)
 			else
 				printf ("(%d) Bytes", bios_addr_map->length_low);
 
-			if (bios_addr_map->type == 1)
+			if (bios_addr_map->type == MULTIBOOT_RAM)
 				printf (", RAM\n");
 			else
 				printf (", Reserved\n");
@@ -196,7 +208,7 @@ void display_boot_progress (const char *message, bool result)
 #undef MAX_STR_LEN
 	char *ok_str = "OK";
 	char *fail_str = "FAIL";
-	char *pstr = fail_str;
+	char *pstr = ok_str;
 	const int right_margin = 8;
 	const left_margin = 1;
 	columnlize_string (message, column_str, SCREEN_WIDTH, 
@@ -205,7 +217,7 @@ void display_boot_progress (const char *message, bool result)
 	printf ("%s", column_str);
 	
 	if (result)
-		pstr = ok_str;
+		pstr = fail_str;
 	
 	for (int i = 0; i < (right_margin - strlen(pstr) - 2); i++)
 		printf (".");

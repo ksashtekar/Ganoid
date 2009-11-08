@@ -14,7 +14,7 @@ VPATH         := arch/$(ARCH)/drivers:testcases:arch/$(ARCH)/boot: \
 
 SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c  \
-	         sysinfo.c kdebug.c         
+	         sysinfo.c kdebug.c bootmem.c         
 
 ASMSRCS       := boot.S kernel.S vectors.S
 

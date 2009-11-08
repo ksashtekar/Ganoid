@@ -3,6 +3,22 @@
 
 #include <ktypes.h>
 
+
+
+#define _ASSERT_DEBUG(c,e,v1,v2,v3)		\
+	if (!c){             \ 
+display_error_info (#c, e, v1, v2, v3, __FILE__, __LINE__);	\
+while (1){} \
+} 
+
+
+
+
+enum {
+	EMultibootRAMAddrBad = 0,
+};
+
+
 enum kdebug_dump_format_width
 	{
 		EDUMP_BYTE,

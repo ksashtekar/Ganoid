@@ -4,6 +4,9 @@
 #include <ktypes.h>
 
 
+#define MULTIBOOT_RAM 1
+
+
 
 
 /*
@@ -132,6 +135,9 @@ enum addr_type
 void display_boot_progress (const char *message, bool result);
 char* columnlize_string (const char *istr, char *ostr, int screen_width, 
 			 int left_margin, int right_margin, int fillbyte);
+
+
+const char* get_bios_addr_buffer (int *size);
 #endif // SYSINFO_H_
 
 

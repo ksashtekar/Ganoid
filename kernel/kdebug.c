@@ -6,6 +6,11 @@
 static const u32 line_width = 16;
 
 
+static const char debug_strings[][1000] =  {
+	"Multiboot returned misaligned RAM address",
+};
+
+
 void kernel_fault (const char *str)
 {
 	printf ("KERN_FAULT: %s\n", str);
@@ -119,6 +124,22 @@ void data_dump (void *start_addr, void *end_addr,
 		addr_print += 0x10;
 	}
 	
+}
+
+
+
+void display_error_info (const char *cond, int e, int v1, int v2, int v3,const char *file_name, 
+		    const char *line_no)
+{
+	printf ("*********************** Ganoid Fault ***********************\n");
+	printf ("File name     : %s\n", file_name);
+	printf ("Line No       : %d\n", line_no);
+	printf ("Check failed  : %s\n", cond);
+	printf ("Fault desc.   : %s\n", &debug_strings[e][0]);
+	printf ("Value 1       : 0x%8x\n", v1);
+	printf ("Value 2       : 0x%8x\n", v2);
+	printf ("Value 3       : 0x%8x\n", v3);
+	printf ("************************************************************\n");
 }
 
 

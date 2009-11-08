@@ -23,11 +23,16 @@ int i = 10;
 
 void cmain (u32 magic_val, u32 *multiboot_info)
 {
+	int r = 0;
 	unsigned char val;
 	int *p;
 
 	vga_clearscreen ();
 	read_multiboot_information (multiboot_info);
+	display_boot_progress ("Read multiboot information", 1);
+	r  = init_bootmem_allocator ();
+	display_boot_progress ("Initialize bootmem allocator", r);
+	while (1);
 
 
 	//printf ("GDT init in progress !\n");
