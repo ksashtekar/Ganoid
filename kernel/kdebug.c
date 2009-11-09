@@ -129,7 +129,7 @@ void data_dump (void *start_addr, void *end_addr,
 
 
 void display_error_info (const char *cond, int e, int v1, int v2, int v3,const char *file_name, 
-		    const char *line_no)
+		    uint line_no)
 {
 	printf ("*********************** Ganoid Fault ***********************\n");
 	printf ("File name     : %s\n", file_name);

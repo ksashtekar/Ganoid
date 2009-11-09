@@ -5,11 +5,7 @@
 
 
 
-#define _ASSERT_DEBUG(c,e,v1,v2,v3)		\
-	if (!c){             \ 
-display_error_info (#c, e, v1, v2, v3, __FILE__, __LINE__);	\
-while (1){} \
-} 
+
 
 
 
@@ -39,5 +35,14 @@ void data_dump (void *start_addr, void *end_addr,
 
 void data_dump_byte (void *start_addr);
 void data_dump_word (void *start_addr);
+void display_error_info (const char *cond, int e, int v1, int v2, 
+			 int v3,const char *file_name, uint line_no);
+
+
+#define _ASSERT_DEBUG(c,e,v1,v2,v3)		\
+	if (!c){             \ 
+display_error_info (#c, e, v1, v2, v3, __FILE__, __LINE__);	\
+while (1){} \
+} 
 
 #endif // KDEBUG_H_
