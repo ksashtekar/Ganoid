@@ -12,6 +12,7 @@
 #include <paging.h>
 #include <sysinfo.h>
 #include <init.h>
+#include <bootmem.h>
 
 
 void my_rtc_irq_handler (void);
@@ -32,6 +33,7 @@ void cmain (u32 magic_val, u32 *multiboot_info)
 	display_boot_progress ("Read multiboot information", 1);
 	r  = init_bootmem_allocator ();
 	display_boot_progress ("Initialize bootmem allocator", r);
+	bm_malloc (200);
 	while (1);
 
 

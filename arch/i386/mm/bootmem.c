@@ -1,4 +1,3 @@
-
 /***************************************************************************
  * This file implements the bootmem allocator.
  * The basic reason for the existence of bootmem allcator is non-existence 
@@ -39,14 +38,15 @@ static void bm_setbit (uint bitno);
 static void bm_clearbit (uint bitno);
 static void bm_setbit_range (uint start, uint end);
 static uint bm_getbit (uint bitno);
-static int find_first_free (uint *bit, uint from) 
-
+static int find_first_free (uint *bit, uint from);
+static int find_free_bits_range (uint total_bits, uint *start_bit);
+static int find_free_bits_range_from (uint total_bits, uint start_bit);
 
 
 extern char __start_, __end_;
 
 static uint bm_heap_start;
-const static uint bm_heap_size = 16777216; 
+const static uint bm_heap_size = ~0; //16777216; 
 static uint bm_heap_end;
 
 
@@ -64,16 +64,13 @@ int init_bootmem_allocator (void)
 {
 	const struct bios_addr_map *s;
 	int buf_size;
-	s = (const struct bios_addr_map*)get_bios_addr_buffer (&buf_size);
+	int r;
 	uint start;
 	uint end = 0;
 	uint start_bit = 0;
 	//uint end_bit = 0;
 
-	bm_heap_start = ROUND_TO_PAGE_SIZE(&__end_);
-	bm_heap_end = bm_heap_start + bm_heap_size;
-	printf ("__end_ = %8x\nbm_heap_start = %8x\nbm_heap_size = %8x\nbm_heap_end = %8x",
-		&__end_, bm_heap_start, bm_heap_size, bm_heap_end);
+	s = (const struct bios_addr_map*)get_bios_addr_buffer (&buf_size);
 
 	int node_total_size; // = s->node_size + sizeof(s->node_size);
 
@@ -100,6 +97,17 @@ int init_bootmem_allocator (void)
 		node_total_size = s->node_size + sizeof(s->node_size);
 		s = (const struct bios_addr_map*)((uint)s + node_total_size);
 	}
+
+	bm_heap_start = ROUND_TO_PAGE_SIZE(&__end_);
+	uint heap_start_bit = GETBIT(bm_heap_start);
+	uint total_heap_req_bits = bm_heap_size/PAGE_SIZE;
+	r = find_free_bits_range_from(total_heap_req_bits, heap_start_bit);
+	_ASSERT_DEBUG((0 != r),EBootMemHeapOverFlow,bm_heap_start,bm_heap_size,(uint)&__end_);
+
+	bm_heap_end = bm_heap_start + bm_heap_size;
+
+	printf ("__end_ = %8x\nbm_heap_start = %8x\nbm_heap_size = %8x\nbm_heap_end = %8x\n",
+		&__end_, bm_heap_start, bm_heap_size, bm_heap_end);
 
 	return 0;
 }
@@ -148,15 +156,15 @@ static int find_first_free (uint *bit, uint from)
 	uint end_bit = GETBIT(bm_heap_end);
 	int index = (start_bit/32);
 	int offset = (start_bit%32);
-	int bit_gap = 32 - offset;
 	uint mask = 1 << offset;
-	bool free_bit_found = false;
+	bool free_bit_found = 0;
 	//	uint local_start_bit = offset;
-	for (uint i = start_bit; i  < end_bit;index++){
+	uint i;
+	for (i = start_bit; i  < end_bit;index++){
 		if (free_bitmap[index]){
-			for (;mask;mask>>1, i++)
+			for (;mask;mask=mask>>1, i++)
 				if (!(free_bitmap[index] & mask)){
-					free_bit_found = true;
+					free_bit_found = 1;
 					break;
 				}
 		}
@@ -178,17 +186,18 @@ static int find_free_bits_range (uint total_bits, uint *start_bit)
 	uint first_free_bit;
 	uint l_start_bit = GETBIT(bm_heap_start);
 	uint end_bit = GETBIT(bm_heap_end);
-	bool success = false;
+	bool success = 0;
 
+	uint i;
 	for (;(l_start_bit + total_bits) < end_bit;){
 		if (find_first_free(&first_free_bit, l_start_bit))
-			return NULL;
-		for (uint i = 1; i < total_bits; i++){
+			return 1;
+		for (i = 1; i < total_bits; i++){
 			if (!bm_getbit (first_free_bit+i))
 				break;
 		}
 		if (i == total_bits){
-			sucess = 1;
+			success = 1;
 			break;
 		}
 		l_start_bit = first_free_bit+i;
@@ -201,11 +210,46 @@ static int find_free_bits_range (uint total_bits, uint *start_bit)
 		return 1;
 }
 
+static int find_free_bits_range_from (uint total_bits, uint start_bit)
+{
+	uint first_free_bit;
+	uint l_start_bit = start_bit;
+	uint end_bit = GETBIT(bm_heap_end);
+	bool success = 0;
+
+	uint i;
+	if ((l_start_bit + total_bits) < end_bit){
+		if (0 == find_first_free(&first_free_bit, l_start_bit)){
+			if (first_free_bit == l_start_bit){
+				for (i = 1; i < total_bits; i++){
+					if (!bm_getbit (first_free_bit+i))
+						break;
+				}
+				if (i == total_bits)
+					success = 1;
+			}
+		}
+	}
+	if (success)
+		return 0;
+	else
+		return 1;
+}
+
 
 
 void* bm_malloc (uint size)
 {
-	uint rsize = ROUND_TO_PAGE_SIZE(size);
-	
+ 	uint rsize = ROUND_TO_PAGE_SIZE(size);
+	uint bits = rsize/PAGE_SIZE;
+	uint start_bit;
+	if (0 == find_free_bits_range (bits, &start_bit))
+		printf ("contiguous area found");
+	else
+		printf ("contiguous area not found");
+
+	while (1);
+
+	return NULL;
 }
 

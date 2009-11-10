@@ -8,6 +8,7 @@ static const u32 line_width = 16;
 
 static const char debug_strings[][1000] =  {
 	"Multiboot returned misaligned RAM address",
+	"Bootmem allocator could not find enough free space for requested RAM"
 };
 
 
@@ -128,17 +129,21 @@ void data_dump (void *start_addr, void *end_addr,
 
 
 
-void display_error_info (const char *cond, int e, int v1, int v2, int v3,const char *file_name, 
-		    uint line_no)
+void display_error_info (const char *cond, int e, 
+			 const char* n_v1, int v1, 
+			 const char* n_v2, int v2, 
+			 const char* n_v3, int v3,
+			 const char *file_name, uint line_no)
 {
+	printf ("\n\n\n\n\n");
 	printf ("*********************** Ganoid Fault ***********************\n");
 	printf ("File name     : %s\n", file_name);
 	printf ("Line No       : %d\n", line_no);
 	printf ("Check failed  : %s\n", cond);
 	printf ("Fault desc.   : %s\n", &debug_strings[e][0]);
-	printf ("Value 1       : 0x%8x\n", v1);
-	printf ("Value 2       : 0x%8x\n", v2);
-	printf ("Value 3       : 0x%8x\n", v3);
+	printf ("Value 1       : 0x%8x (%s)\n", v1, n_v1);
+	printf ("Value 2       : 0x%8x (%s)\n", v2, n_v2);
+	printf ("Value 3       : 0x%8x (%s)\n", v3, n_v3);
 	printf ("************************************************************\n");
 }
 
