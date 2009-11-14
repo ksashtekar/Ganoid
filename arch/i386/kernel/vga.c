@@ -2,9 +2,12 @@
 #include <common.h>
 #include <ktypes.h>
 
-char cursor_x, cursor_y;
+uchar cursor_x, cursor_y;
 const int  max_x = SCREEN_WIDTH, max_y = SCREEN_HEIGHT;
 const int KTabWidth = KTAB_WIDTH;
+
+
+static void vga_scroll_up (void);
 
 void vga_clearscreen ()
 {
@@ -31,7 +34,7 @@ void vga_clearscreen ()
 
 /** \brief Scroll the screen up
  */
-void vga_scroll_up (void)
+static void vga_scroll_up (void)
 {
   unsigned short *vptr = (unsigned short *)VMEM_BASE;
   unsigned char backcolor = 0;
@@ -65,7 +68,7 @@ void vga_puts (const char *s)
 }
 
 
-void vga_putc (char c)
+void vga_putc (const char c)
 {
   unsigned short *vptr = (unsigned short *)VMEM_BASE;
   unsigned char backcolor = 0;

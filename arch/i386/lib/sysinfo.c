@@ -23,6 +23,8 @@ static struct multiboot_info multiboot_info;
 static u8 bios_addr_map_buffer[sizeof(struct bios_addr_map)*ADDR_MAP_NO_OF_NODES];
 static u8 bios_drive_info_buffer[sizeof(struct bios_drive_info)*BIOS_DRIVE_INFO_NO_OF_NODES];
 
+static void print_multiboot_information (void);
+
 // ~temp
 extern int debug_printf;
 
@@ -176,7 +178,7 @@ static void print_multiboot_information (void)
 			printf (", %d-C", bios_drive_info->drive_cylinders);
 			printf (", %d-H", bios_drive_info->drive_heads);
 			printf (", %d-S", bios_drive_info->drive_sectors);
-			u16 *start_port_array = &bios_drive_info->start_port_array;
+			u16 *start_port_array = bios_drive_info->start_port_array;
 			while (*start_port_array){
 				printf (", %d", *start_port_array);
 				start_port_array++;

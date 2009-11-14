@@ -14,26 +14,38 @@
 #include <init.h>
 #include <bootmem.h>
 
-
+int cmain (u32 magic_val, u32 *multiboot_info);
 void my_rtc_irq_handler (void);
 void my_page_fault_handler (void);
 
 
 
-int i = 10;
+//int i = 10;
 
-void cmain (u32 magic_val, u32 *multiboot_info)
+int cmain (u32 magic_val, u32 *multiboot_info)
 {
 	int r = 0;
 	unsigned char val;
-	int *p;
+	uint *p;
+
+	if (magic_val != 0x2BADB002)
+		while (1);
+	
+
 
 	vga_clearscreen ();
 	read_multiboot_information (multiboot_info);
 	display_boot_progress ("Read multiboot information", 1);
 	r  = init_bootmem_allocator ();
 	display_boot_progress ("Initialize bootmem allocator", r);
-	bm_malloc (200);
+	int *p1; // = (int*)bm_malloc (16777216);
+	int ii = 3;
+	while (ii--) {
+		p1 = (int*)bm_malloc (4096); //16777216);
+	//if (p1) printf ("allocation success\n");
+	//else printf ("allocation fail\n");
+	printf ("Address ::0x%8x\n", (uint)p1);
+	}
 	while (1);
 
 
@@ -49,7 +61,8 @@ void cmain (u32 magic_val, u32 *multiboot_info)
 	asm volatile ("sti");
 	init_paging ();
 	printf ("i am now working in paging mode\n");
-	p = &i;
+	int i = 10;
+	p = (unsigned*)&i;
 	p = (unsigned*)0x10000000;
 	(*p) = 0;
 	i++;
@@ -73,6 +86,8 @@ void cmain (u32 magic_val, u32 *multiboot_info)
 	asm volatile ("xor %ebx, %ebx");
 	asm volatile ("add $100, %ebx");
 	asm volatile ("add $0, %0": "=a"(val): "a"(val));
+
+	return 0;
 }
 
 

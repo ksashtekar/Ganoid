@@ -124,7 +124,6 @@ struct bios_drive_info
 } __attribute__((packed));
 
 
-static void print_multiboot_information (void);
 
 enum addr_type
 	{
@@ -132,6 +131,8 @@ enum addr_type
 	};
 
 
+
+void read_multiboot_information (u32 *multiboot_info_ptr);
 void display_boot_progress (const char *message, bool result);
 char* columnlize_string (const char *istr, char *ostr, int screen_width, 
 			 int left_margin, int right_margin, int fillbyte);

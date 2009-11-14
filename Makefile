@@ -27,7 +27,7 @@ DEPENDS	      += $(patsubst %.S,.%.d,$(ASMSRCS))
 
 BIN           := ganoid-$(VERSION)
 CC            := gcc -g -c -std=gnu99 
-CPPFLAGS      := -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0
+CPPFLAGS      := -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0 -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations  -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Waddress -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var -Wpointer-sign 
 
 
 #.DEFAULT_GOAL = $(BIN)
