@@ -294,3 +294,6 @@ void* bm_malloc (uint size)
 	return (void*)FROMBIT(start_bit);;
 }
 
+
+void* bm_free (
+
