@@ -17,13 +17,15 @@
 
 #define ADDR_MAP_NO_OF_NODES 20
 #define BIOS_DRIVE_INFO_NO_OF_NODES 20
+#define RAM_MAP_NODES 5
 
 
 static struct multiboot_info multiboot_info;
 static u8 bios_addr_map_buffer[sizeof(struct bios_addr_map)*ADDR_MAP_NO_OF_NODES];
 static u8 bios_drive_info_buffer[sizeof(struct bios_drive_info)*BIOS_DRIVE_INFO_NO_OF_NODES];
+static ram_map ram_map_store[RAM_MAP_NODES];
 
-static void print_multiboot_information (void);
+static void parse_multiboot_information (void);
 
 // ~temp
 extern int debug_printf;
@@ -58,7 +60,7 @@ void read_multiboot_information (u32 *multiboot_info_ptr)
 			multiboot_info.drives_length);
 
 
-	//print_multiboot_information ();
+	parse_multiboot_information ();
 
 	//while (1);
 }
@@ -71,7 +73,7 @@ const char* get_bios_addr_buffer (int *size)
 }
 
 
-static void print_multiboot_information (void)
+static void parse_multiboot_information (void)
 {
 	char na[]="Not Specified";
 	u32 flags;
@@ -127,6 +129,7 @@ static void print_multiboot_information (void)
 	if ((flags & 0x20) && multiboot_info.mmap_length){
 		struct bios_addr_map *bios_addr_map;
 		u32 i = 0;
+		uint rammap_i = 0;
 		u32 size = multiboot_info.mmap_length;
 		bios_addr_map = (struct bios_addr_map*)bios_addr_map_buffer;
 		while (size){
@@ -147,8 +150,15 @@ static void print_multiboot_information (void)
 			else
 				printf ("(%d) Bytes", bios_addr_map->length_low);
 
-			if (bios_addr_map->type == MULTIBOOT_RAM)
+			if (bios_addr_map->type == MULTIBOOT_RAM){
 				printf (", RAM\n");
+				_ASSERT((rammap_i<RAM_MAP_NODES),EMultiBootSpaceInsufficient,
+					rammap_i, RAM_MAP_NODES, i);
+				ram_map_store[rammap_i].start_addr = bios_addr_map->base_addr_low;
+				ram_map_store[rammap_i].end_addr = (uint)bios_addr_map->base_addr_low 
+					+ (uint)bios_addr_map->length_low;
+				rammap_i++;
+			}
 			else
 				printf (", Reserved\n");
 			
@@ -283,3 +293,7 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 
 
+const ram_map* get_rammap_ptr ()
+{
+	return ram_map_store;
+}

@@ -35,9 +35,10 @@ int cmain (u32 magic_val, u32 *multiboot_info)
 
 	vga_clearscreen ();
 	read_multiboot_information (multiboot_info);
-	display_boot_progress ("Read multiboot information", 1);
+	display_boot_progress ("Read multiboot information", 0);
 	r  = init_bootmem_allocator ();
 	display_boot_progress ("Initialize bootmem allocator", r);
+	while (1);
 	int *p1; // = (int*)bm_malloc (16777216);
 	int ii = 3;
 	while (ii--) {

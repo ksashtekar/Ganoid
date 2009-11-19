@@ -12,7 +12,10 @@
 
 enum {
 	EMultibootRAMAddrBad = 0,
-	EBootMemHeapOverFlow
+	EBootMemHeapOverFlow = 1,
+	EBootMemNoMemory = 2,
+	EMultibootDataCorrupt = 3,
+	EMultiBootSpaceInsufficient = 4
 };
 
 
@@ -44,6 +47,12 @@ void display_error_info (const char *cond, int e,
 
 
 #define _ASSERT_DEBUG(c,e,v1,v2,v3)		\
+	if (!c){							\
+		display_error_info (#c, e, #v1, v1, #v2, v2, #v3, v3, __FILE__, __LINE__); \
+		while (1){}						\
+	} 
+
+#define _ASSERT(c,e,v1,v2,v3)		\
 	if (!c){							\
 		display_error_info (#c, e, #v1, v1, #v2, v2, #v3, v3, __FILE__, __LINE__); \
 		while (1){}						\
