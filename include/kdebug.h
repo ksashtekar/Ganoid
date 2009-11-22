@@ -15,7 +15,8 @@ enum {
 	EBootMemHeapOverFlow = 1,
 	EBootMemNoMemory = 2,
 	EMultibootDataCorrupt = 3,
-	EMultiBootSpaceInsufficient = 4
+	EMultiBootSpaceInsufficient = 4,
+	EMultibootFreeAddrInvalid = 5
 };
 
 
@@ -37,8 +38,13 @@ void data_dump (void *start_addr, void *end_addr,
 		enum kdebug_dump_format_width width, 
 		enum kdebug_dump_format_type type);
 
+#define DUMP_HALFWORD(a) data_dump_halfword (a)
+#define DUMP_WORD(a) data_dump_word (a)
+
 void data_dump_byte (void *start_addr);
 void data_dump_word (void *start_addr);
+void data_dump_halfword (void *start_addr);
+
 void display_error_info (const char *cond, int e, 
 			 const char* n_v1, uint v1, 
 			 const char* n_v2, uint v2, 

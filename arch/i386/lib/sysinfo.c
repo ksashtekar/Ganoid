@@ -31,6 +31,9 @@ static void parse_multiboot_information (void);
 extern int debug_printf;
 
 
+static uint rammap_i = 0;
+
+
 /* Parse the multiboot information.  
  * 
  * The information about the system hardware environment
@@ -129,7 +132,6 @@ static void parse_multiboot_information (void)
 	if ((flags & 0x20) && multiboot_info.mmap_length){
 		struct bios_addr_map *bios_addr_map;
 		u32 i = 0;
-		uint rammap_i = 0;
 		u32 size = multiboot_info.mmap_length;
 		bios_addr_map = (struct bios_addr_map*)bios_addr_map_buffer;
 		while (size){
@@ -161,7 +163,7 @@ static void parse_multiboot_information (void)
 			}
 			else
 				printf (", Reserved\n");
-			
+
 			size -= (bios_addr_map->node_size + sizeof (bios_addr_map->node_size));
 			bios_addr_map = (struct bios_addr_map*)((u32)bios_addr_map + 
 								  bios_addr_map->node_size + 
@@ -188,13 +190,11 @@ static void parse_multiboot_information (void)
 			printf (", %d-C", bios_drive_info->drive_cylinders);
 			printf (", %d-H", bios_drive_info->drive_heads);
 			printf (", %d-S", bios_drive_info->drive_sectors);
-			u16 *start_port_array = bios_drive_info->start_port_array;
+			u16 *start_port_array = &bios_drive_info->start_port_array;
 			while (*start_port_array){
 				printf (", %d", *start_port_array);
 				start_port_array++;
 			}
-			//if (i == 2)while (1);
-
 			printf ("\n");;
 
 			size -= bios_drive_info->size;
@@ -210,6 +210,8 @@ static void parse_multiboot_information (void)
 	printf ("APM information not parsed\n");
 
 	printf ("VBE information not parsed\n");
+
+
 }
 
 
@@ -293,7 +295,8 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 
 
-const ram_map* get_rammap_ptr ()
+const ram_map* get_rammap_ptr (uint *rammap_nodes)
 {
+	*rammap_nodes = rammap_i;
 	return ram_map_store;
 }

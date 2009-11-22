@@ -31,22 +31,24 @@ int cmain (u32 magic_val, u32 *multiboot_info)
 	if (magic_val != 0x2BADB002)
 		while (1);
 	
-
-
 	vga_clearscreen ();
 	read_multiboot_information (multiboot_info);
 	display_boot_progress ("Read multiboot information", 0);
 	r  = init_bootmem_allocator ();
 	display_boot_progress ("Initialize bootmem allocator", r);
-	while (1);
 	int *p1; // = (int*)bm_malloc (16777216);
-	int ii = 3;
+	int ii = 2999;
 	while (ii--) {
+		printf ("%d: Requested memory\n", ii);
 		p1 = (int*)bm_malloc (4096); //16777216);
-	//if (p1) printf ("allocation success\n");
-	//else printf ("allocation fail\n");
-	printf ("Address ::0x%8x\n", (uint)p1);
+		if  (!p1)
+			while (1);
+		//if (p1) printf ("allocation success\n");
+		//else printf ("allocation fail\n");
+		printf ("Address ::0x%8x\n", (uint)p1);
+		//delay (0);
 	}
+	//bm_free (p1);
 	while (1);
 
 

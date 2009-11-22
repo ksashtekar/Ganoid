@@ -4,6 +4,8 @@
 #define GANOID_DEBUG 
 #define ILP while(1);
 
+#define OS_NAME "Ganoid"
+
 typedef unsigned short u16;
 typedef unsigned char u8;
 typedef unsigned int u32;
@@ -21,5 +23,7 @@ typedef int bool;
 #define TRUE  1
 #define false 0
 #define FALSE 0
+
+extern const uint kdebug_init_val;
 
 #endif // KTYPE_H_

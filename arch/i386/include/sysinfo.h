@@ -143,7 +143,7 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 
 const char* get_bios_addr_buffer (int *size);
-const ram_map* get_rammap_ptr (void);
+const ram_map* get_rammap_ptr (uint *rammap_nodes);
 #endif // SYSINFO_H_
 
 

@@ -8,10 +8,11 @@ static const u32 line_width = 16;
 
 static const char debug_strings[][1000] =  {
 	"Multiboot returned misaligned RAM address", // 0
-	"Bootmem allocator could not find enough free space", // 1
+	"Bootmem allocator could not find enough free space for heap", // 1
 	"Bootmem allocator could not allocate memory for accounting", // 2
 	"Multiboot data seems to be corrupted", // 3
 	"Multiboot could not find enough space for parsing of data", // 4
+	"Free address received by bootmem allocator is not valid", // 5
 
 	"NULL"
 };
@@ -32,6 +33,11 @@ void data_dump_byte (void *start_addr)
 void data_dump_word (void *start_addr)
 {
 	data_dump (start_addr, ~0, EDUMP_WORD, EDUMP_HEX);
+}
+
+void data_dump_halfword (void *start_addr)
+{
+	data_dump (start_addr, ~0, EDUMP_HALFWORD, EDUMP_HEX);
 }
 
 
