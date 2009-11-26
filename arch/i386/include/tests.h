@@ -5,6 +5,8 @@
 
 typedef int (*testfuncptr)(int param1, int param2, void * ptr);
 
+int Test_bootmem (int param1, int param2, void *ptr);
+
 int ExecuteTests (int *TestIdArray);
 
 

@@ -13,6 +13,7 @@ static const char debug_strings[][1000] =  {
 	"Multiboot data seems to be corrupted", // 3
 	"Multiboot could not find enough space for parsing of data", // 4
 	"Free address received by bootmem allocator is not valid", // 5
+	"The bootmemory allocator is not initialized yet.", // 6
 
 	"NULL"
 };
@@ -28,11 +29,13 @@ void kernel_fault (const char *str)
 void data_dump_byte (void *start_addr)
 {
 	data_dump (start_addr, ~0, EDUMP_BYTE, EDUMP_HEX);
+	while (1);
 }
 
 void data_dump_word (void *start_addr)
 {
 	data_dump (start_addr, ~0, EDUMP_WORD, EDUMP_HEX);
+	while (1);
 }
 
 void data_dump_halfword (void *start_addr)

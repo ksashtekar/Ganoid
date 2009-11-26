@@ -16,7 +16,8 @@ enum {
 	EBootMemNoMemory = 2,
 	EMultibootDataCorrupt = 3,
 	EMultiBootSpaceInsufficient = 4,
-	EMultibootFreeAddrInvalid = 5
+	EMultibootFreeAddrInvalid = 5,
+	EBootmemAllocatorNotInitialized = 6
 };
 
 

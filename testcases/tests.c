@@ -1,11 +1,12 @@
 #include <stdarg.h>
 #include <kernel.h>
-#include <ktype.h>
+#include <ktypes.h>
 
 #include <tests.h>
 #include <tests/t_sprintf.h>
 
-testfuncptr TestFunctions[MAX_TESTS] = {Test_sprintf, NULL};
+
+testfuncptr TestFunctions[MAX_TESTS] = {Test_sprintf, Test_bootmem, NULL};
 
 
 int ExecuteTests (int *TestIdArray)

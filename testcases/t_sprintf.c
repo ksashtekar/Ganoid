@@ -1,4 +1,4 @@
-#include <ktype.h>
+#include <ktypes.h>
 #include <stdarg.h>
 #include <kernel.h>
 #include <vga.h>

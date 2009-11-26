@@ -36,6 +36,8 @@ int cmain (u32 magic_val, u32 *multiboot_info)
 	display_boot_progress ("Read multiboot information", 0);
 	r  = init_bootmem_allocator ();
 	display_boot_progress ("Initialize bootmem allocator", r);
+	Test_bootmem (0,0,0);
+	while (1);
 	int *p1; // = (int*)bm_malloc (16777216);
 	int ii = 2999;
 	while (ii--) {

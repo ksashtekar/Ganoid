@@ -26,7 +26,10 @@ typedef struct {
 
 static bm_account *start_addr_acnt = NULL;
 static bm_account *end_addr_acnt = NULL;
-static uint acnt_i = 0; // to store number of allocated account
+static uint acnt_i = 0; // to store number of allocated
+			// account
+
+static int bootmem_init_complete = 0;
 
 
 /*
@@ -153,6 +156,8 @@ int init_bootmem_allocator (void)
 	memset (start_addr_acnt, 0, ((uint)end_addr_acnt - (uint)(start_addr_acnt)));
 	printf ("Bootmem allocator accounting area set from 0x%8x to 0x%8x\n", 
 		(uint)start_addr_acnt, (uint)end_addr_acnt);
+
+	bootmem_init_complete = 1;
 	return r;
 }
 
@@ -249,8 +254,8 @@ static int find_free_bits_range (uint total_bits, uint *start_bit)
 	bool success = 0;
 
 
-	printf ("%s\n", __FUNCTION__);
-	printf ("l_start_bit: %u\ntotal_bits: %u\nend_bit: %u\n", l_start_bit, total_bits, end_bit);
+	//printf ("%s\n", __FUNCTION__);
+	//printf ("l_start_bit: %u\ntotal_bits: %u\nend_bit: %u\n", l_start_bit, total_bits, end_bit);
 
 
 
@@ -258,20 +263,20 @@ static int find_free_bits_range (uint total_bits, uint *start_bit)
 	uint b = kdebug_init_val;
 	uint remaining_bits = total_bits - 1;
 	for (;(l_start_bit + remaining_bits) <= end_bit;){
-		printf ("Checking from bit %d ... ", l_start_bit);
+		//printf ("Checking from bit %d ... ", l_start_bit);
 		if (0 == find_first_free(&first_free_bit, l_start_bit)){
 			// we already have one bit free. now
 			// we need to check for remaining
 			// bits in this range
-			printf ("first free = %d .... others ...", first_free_bit);
+			//printf ("first free = %d .... others ...", first_free_bit);
 			for (b = first_free_bit + 1, i = 0; (i < remaining_bits) && 
 				     (b <= end_bit); i++, b++){ 
-				printf (" ...%d.", b);
+				//printf (" ...%d.", b);
 				if (bm_getbit (b))
 					break;
 			}
 			if (i == remaining_bits){
-				printf ("..Success\n");
+				//printf ("..Success\n");
 				success = 1;
 				break;
 			}
@@ -279,7 +284,7 @@ static int find_free_bits_range (uint total_bits, uint *start_bit)
 		//printf ("Fail\n");
 		l_start_bit = first_free_bit+i;
 	}
-	printf ("done\n");
+	//printf ("done\n");
 	if (success){
 		*start_bit = first_free_bit;
 		return 0;
@@ -333,6 +338,8 @@ static int find_free_bits_range_from (uint total_bits, uint start_bit)
 
 void* bm_malloc (uint size)
 {
+	_ASSERT(bootmem_init_complete, EBootmemAllocatorNotInitialized,
+		0, 0, 0);
 	uint r;
 	//size = 17000;
  	uint rsize = ROUND_TO_PAGE_SIZE(size);
@@ -342,10 +349,14 @@ void* bm_malloc (uint size)
 	// first check if we have space left in our account area
 	bm_account *s = NULL;
 	s = search_free_acnt_node ();
-	if (!s)
+	if (!s) {
+		printf ("No free account node found. Cannot allocate memory !\n");
 		return NULL;
+	}
+	//	else
+	//printf ("Free account node found....\n");
 
-	printf ("bits = %d\n", bits);
+	//printf ("bits = %d\n", bits);
 	r = find_free_bits_range (bits, &start_bit);
 	//printf ("r = %d\n", r);
 	if (r)
@@ -359,7 +370,7 @@ void* bm_malloc (uint size)
 	s->start_bit = start_bit;
 	s->end_bit = end_bit;
 	acnt_i++;
-	printf ("Bootmem allocated space: from %u to %u\n", start_bit, end_bit);
+	//	printf ("Bootmem allocated space: from %u to %u\n", start_bit, end_bit);
 
 	return (void*)FROMBIT(start_bit);;
 }
@@ -367,6 +378,8 @@ void* bm_malloc (uint size)
 
 void bm_free (void *ptr)
 {
+	_ASSERT(bootmem_init_complete, EBootmemAllocatorNotInitialized,
+		0, 0, 0);
 	uint bit = GETBIT(ptr);
 
 	if (ptr) {
@@ -374,10 +387,10 @@ void bm_free (void *ptr)
 		s = search_bit_in_acnt (bit);
 		_ASSERT ((s), EMultibootFreeAddrInvalid, (uint)ptr,
 			 bit, 0);
-		
+
 		bm_clearbit_range (s->start_bit, s->end_bit, 1);
-		printf ("Bootmem deallocated space: from %u to %u\n", 
-			s->start_bit, s->end_bit);
+		//		printf ("Bootmem deallocated space: from %u to %u\n", 
+		//s->start_bit, s->end_bit);
 		
 		s->start_bit = 0;
 		s->end_bit = 0;
@@ -392,36 +405,35 @@ bm_account* search_bit_in_acnt (uint bit)
 {
 	int r = 1;
 	bm_account *s = start_addr_acnt;
-	for (;(s <= end_addr_acnt) && r;s++){
+	//DUMP_WORD (s);
+
+	//printf ("trying to find bit %u ..", bit);
+	for (;(s <= end_addr_acnt);s++){
+		// printf ("kaus: %u %u\n", s->start_bit, s->end_bit); 
 		if (bit <= s->end_bit)
-			if (bit >= s->start_bit)
+			if (bit >= s->start_bit){
+				//printf ("found .. ");
 				r = 0;
+				break;
+			}
 	}
-	if (!r)
+
+	if (!r) {
+		//printf ("s->start_bit = %u s->end_bit = %u\n", s->start_bit, s->end_bit);
 		return s;
-	else
+	}
+	else{
+		//printf ("not found\n");
 		return NULL;
+	}
 }
 
 
 // search free account information node ..
 bm_account* search_free_acnt_node ()
 {
-	bm_account *s = start_addr_acnt;
-	uint i = kdebug_init_val;
-	uint found = 0; 
-
-	printf ("%s\n", __FUNCTION__);
-
-	for (;s <= end_addr_acnt; s++){
-		if ( (0 == s->start_bit) &&
-		     (0 == s->end_bit)) {
-			     found = 1;
-			     break;
-		}
-	}
-	if (found)
-		return s;
-	else
-		return NULL;
+	// search for '0' because whichever node will have
+	// bit 0 will be considered empty according to our
+	// implicit understanding.
+	return search_bit_in_acnt (0);
 }
