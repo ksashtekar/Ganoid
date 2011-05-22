@@ -133,15 +133,10 @@ int add_task_to_run_queue (struct task_struct *task)
     // go till the end of the list ...
     for (node = head; node->next!=NULL; node = node->next) {}
 
-    printf("Done 1\n");
     node->next = task;
-    printf("Done 2\n");
     task->prev = node;
-    printf("Done 3\n");
     task->next = NULL;
-    printf("Done 4\n");
     EXIT_CRITICAL_SECTION;
-    printf("Done 5\n");
     return 0;
 }
 

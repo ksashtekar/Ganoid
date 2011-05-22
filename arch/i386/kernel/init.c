@@ -28,6 +28,7 @@ void my_page_fault_handler (void);
 
 extern int multiboot_struct_ptr;
 
+char *process_name="Hello";
 
 struct task_struct idle_task_s = {
     .task_name = "idle_task",
@@ -43,12 +44,23 @@ int re (void);
 
 int process_1 (void *p)
 {
+    u32 *frame_ptr;
+#if 0
+    ENTER_CRITICAL_SECTION;
+    asm volatile ("mov %%ebp, %0\n" : : "m"(frame_ptr));
+    printf("Frame pointer: 0x%x\n", frame_ptr);
+    printf("0x%x: 0x%x\n", frame_ptr + 3, *(frame_ptr+3));
+    printf("0x%x: 0x%x\n", frame_ptr + 2, *(frame_ptr+2));
+    printf("0x%x: 0x%x\n", frame_ptr + 1, *(frame_ptr+1));
+    printf("0x%x: 0x%x\n", frame_ptr + 0, *(frame_ptr+0));
+    while(1);
+#endif // 0
     int j = 0;
-    while(1) {
-	ENTER_CRITICAL_SECTION;
-	printf ("process 1: %d\n", j++);
-	EXIT_CRITICAL_SECTION;
-    }
+    //while(1) {
+	//ENTER_CRITICAL_SECTION;
+	printf ("process 1: %d : %s\n", j++, p);
+	//EXIT_CRITICAL_SECTION;
+	//}
     return 0;
 }
     
@@ -56,7 +68,7 @@ int process_2 (void *p)
 {
     while(1) {
 	ENTER_CRITICAL_SECTION;
-	printf ("process 2\n");
+	printf ("process 2: %s\n", p);
 	EXIT_CRITICAL_SECTION;
     }
     return 0;
@@ -67,7 +79,7 @@ int process_3 (void *p)
 {
     while(1) {
 	ENTER_CRITICAL_SECTION;
-	printf ("process 3\n");
+	printf ("process 3: %s\n", p);
 	EXIT_CRITICAL_SECTION;
     }
     return 0;
@@ -127,9 +139,10 @@ int kernel_main ()
     //    asm volatile ("sti");
 
     init_schedular();
-    kernel_thread(process_1, NULL, 0);
-    kernel_thread(process_2, NULL, 0);
-    kernel_thread(process_3, NULL, 0);
+    kernel_thread(process_1, "Kaustubh", 0);
+    kernel_thread(process_2, "Smita", 0);
+    kernel_thread(process_3, "Tejas", 0);
+
     asm volatile ("sti");	
     idle_task();
     while (1){}
@@ -224,4 +237,7 @@ void idle_task (void)
 	EXIT_CRITICAL_SECTION;
     }
 }
+
+
+
 

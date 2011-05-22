@@ -23,11 +23,21 @@
 
 // for now only have a static array of empty structures of task_struct. will
 // use dynamic allocation in the future
-struct task_struct task_struct_array[10];
+struct task_struct task_struct_array[10] __attribute__((aligned(4)));
 static int task_struct_array_index = 0;
 
 
 static struct task_struct* get_free_task_struct (void);
+
+
+static void hello()
+{
+    while(1){
+	ENTER_CRITICAL_SECTION;
+	printf("Process exited\n");
+	EXIT_CRITICAL_SECTION;
+    }
+}
 
 
 /*
@@ -38,25 +48,28 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 {
     printf("Start kernel thread creation\n");
     struct task_struct *t = get_free_task_struct ();
+    printf("Task struct allocated at: 0x%x\n", t);
     t->task_name[0] = 'X';
     t->task_name[1] = '\0';
 
     // map the isr_registers struct to the stack space. this will help us when 
     // this process needs to be invoked first time.
-    unsigned char* sptr = t->stack + DEFAULT_STACK_SIZE - 1;
+    unsigned* sptr = t->stack + DEFAULT_STACK_SIZE - 4;
     *sptr = arg; // argument for first function in the new thread
     sptr--;
-    *sptr = 0; // dummy EIP ... this would be the place where 'fn'
+    *sptr = hello; // dummy EIP ... this would be the place where 'fn'
+    printf("%s: 0x%x\n", arg, sptr);
     // would return ... FIXME: Fill this later with OS exit
     // function
     const char *func_sptr = sptr;
     //sptr--;
     //*sptr = 
-    isr_registers_t* i = (sptr - sizeof(isr_registers_t));
+    isr_registers_t* i = (sptr - (sizeof(isr_registers_t)/4));
 
 
-    i->ss = 0x10;
-    i->useresp = func_sptr;
+    // FIXME: This may be required for interrupt from user space
+    //    i->ss = 0x10;
+    //i->useresp = func_sptr;
     i->eflags = 0x00200260;
     //i->eflags = 0x00000400; FIXME: proper value needed
     i->cs = 0x08; // code segment
@@ -82,7 +95,7 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 
     t->esp = i;
 
-    printf("Add just created thread to active list...\n");
+    //printf("Add just created thread to active list...\n");
     add_task_to_run_queue(t);
 }
 

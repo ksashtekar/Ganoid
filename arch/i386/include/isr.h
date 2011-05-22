@@ -13,7 +13,7 @@ typedef struct
 	unsigned gs, fs, es, ds;                  // Data segment selector
 	unsigned edi, esi, ebp, esp, ebx, edx, ecx, eax; // Pushed by pusha.
 	unsigned int_no, err_code;    // Interrupt number and error code (if applicable)
-	unsigned eip, cs, eflags, useresp, ss; // Pushed by the processor automatically.
+    unsigned eip, cs, eflags; //, useresp, ss; // Pushed by the processor automatically.
 }isr_registers_t;
 
 
