@@ -8,6 +8,7 @@
 
 typedef unsigned short u16;
 typedef unsigned char u8;
+typedef char          i8;
 typedef unsigned int u32;
 typedef unsigned int size_t;
 
@@ -15,6 +16,8 @@ typedef unsigned int size_t;
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef int bool;
+typedef int pid_t;
+
 #define NULL ((void*)0)
 
 #define MAX_UINT ~(uint)0x00

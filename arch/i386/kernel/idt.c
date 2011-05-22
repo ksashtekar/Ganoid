@@ -15,7 +15,7 @@ void init_Interrupt_Descriptor_Table (void)
 {
 	int i;
 	
-	struct IDTR_val cur_IDTR_val;
+	//struct IDTR_val cur_IDTR_val;
 	memset (&IDT, 0, sizeof(IDT));
 
 	add_idt_entry (0, 0x08, (unsigned)ISR0, DESC_SVC, INT_DESC_GATESIZE32BIT);
@@ -27,7 +27,7 @@ void init_Interrupt_Descriptor_Table (void)
 	add_idt_entry (6, 0x08, (unsigned)ISR6, DESC_SVC, INT_DESC_GATESIZE32BIT);
 	add_idt_entry (7, 0x08, (unsigned)ISR7, DESC_SVC, INT_DESC_GATESIZE32BIT);
 	add_idt_entry (8, 0x08, (unsigned)ISR8, DESC_SVC, INT_DESC_GATESIZE32BIT);
-	add_idt_entry (9, 0x08, (unsigned)ISR9, DESC_SVC, INT_DESC_GATESIZE32BIT);
+ 	add_idt_entry (9, 0x08, (unsigned)ISR9, DESC_SVC, INT_DESC_GATESIZE32BIT);
 	add_idt_entry (10, 0x08, (unsigned)ISR10, DESC_SVC, INT_DESC_GATESIZE32BIT);
 	add_idt_entry (11, 0x08, (unsigned)ISR11, DESC_SVC, INT_DESC_GATESIZE32BIT);
 	add_idt_entry (12, 0x08, (unsigned)ISR12, DESC_SVC, INT_DESC_GATESIZE32BIT);
@@ -77,27 +77,27 @@ void init_Interrupt_Descriptor_Table (void)
 
 
 void add_idt_entry (int idt_index, unsigned short segment_selector, 
-		    unsigned segment_offset, int descriptor_priv_level, 
-		    int gate_size)
+		    unsigned segment_offset, unsigned int descriptor_priv_level, 
+		    unsigned int gate_size)
 {
 	IDT[idt_index].offset_low = segment_offset & 0x0000FFFF;
 	IDT[idt_index].segment_selector = segment_selector;
 	IDT[idt_index].zero_area = 0;
-	IDT[idt_index].flags = 0x80 | (DESC_SVC << 5) | 
-		INT_DESC_GATESIZE32BIT | 0x07;
-	IDT[idt_index].offset_high = (segment_offset & 0xFFFF0000) >> 16;
+	IDT[idt_index].flags = (unsigned char)(0x80 | (descriptor_priv_level << 5) | 
+					       gate_size | 0x07);
+	IDT[idt_index].offset_high = (short unsigned int)((segment_offset & 0xFFFF0000) >> 16);
 }
 
 
-void print_interrupt_desc_table (const struct IDTR_val *IDTR_val)
+void print_interrupt_desc_table (const struct IDTR_val *IDTR_value)
 {
 	int i;
-	struct interrupt_descriptor *int_desc = (struct interrupt_descriptor*)IDTR_val->table_base_addr;
+	struct interrupt_descriptor *int_desc = (struct interrupt_descriptor*)IDTR_value->table_base_addr;
 	unsigned short segment_selector;
 	unsigned int segment_offset;
 
 	// seg_desc points to the first segment descriptor
-	for (i=0; i < IDTR_val->table_limit; i+=8, int_desc+=1)	{
+	for (i=0; i < IDTR_value->table_limit; i+=8, int_desc+=1)	{
 		printf ("\nInterrupt Descriptor No.: %d\n", i/8);
 		printf ("Descriptor Address: %x\n", int_desc);
 		printf ("DWord_H: %8x\n", *(unsigned int*)((unsigned int*)int_desc+1));

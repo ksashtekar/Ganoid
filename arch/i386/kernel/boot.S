@@ -20,10 +20,17 @@
 	
 #include <multiboot.h>
 
+	.set 	MULTIBOOT_MAGIC_NUMBER, 0x2BADB002
+	.global multiboot_struct_ptr
+
+	.data	
+multiboot_struct_ptr:
+	.long 0
 
 	
 	.text
 	.globl start, _start
+
 
 start:
 _start:
@@ -62,26 +69,44 @@ multiboot_entry:
 	pushl $0
 	popf
 
-	// push the pointer to the multiboot information structure
-	pushl %ebx
-	// push the magic value
-	pushl %eax
+	// save the multiboot pointer
+	mov 	%ebx, multiboot_struct_ptr
+	// check valid magic number
+	cmp 	$MULTIBOOT_MAGIC_NUMBER, %eax
+	je	1f
+	// oh no...
+	pushl 	$multiboot_magic_mismatch_msg
+	call	EXT_C(printf)
+	jmp	exit_ganoid
 
-	// bss space has been init'ed by the good bootloader	
+1:
+	// create cpu info database
+	call 	check_if_right_cpu
+
+	// bss space has been init'ed by the good bootloader
+
+	// the gdt has been already set up by the
+	// bootloader. But we will do it again.
+	call	init_GDT
 	
 	// now enter the C main function
-	call EXT_C(cmain)
+	call EXT_C(kernel_main)
+	pushl $halt_message
+	call EXT_C(printf)
+	jmp exit_ganoid
 
-	// halt
-	//pushl $halt_message
-	//call EXT_C(printf)
-loop:
+exit_ganoid:	
+
 	cli
+1:
+	
 	hlt
-	jmp loop
+	jmp 1b
 
 halt_message:
 	.asciz "Halted."
+multiboot_magic_mismatch_msg:
+	.asciz "Multiboot magic number does not match. Will stop booting"
 
 
 	// stack area

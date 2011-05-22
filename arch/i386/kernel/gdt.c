@@ -8,17 +8,21 @@
 #include <gdt.h>
 #include <kernel.h>
 
-void gdt_flush ();
+void gdt_flush (void);
 
 // allocate space for the GDT
 
-struct segment_descriptor GDT[DEFAULT_GDT_SIZE];
+struct segment_descriptor GDT[DEFAULT_GDT_SIZE] __attribute__((aligned(8)));
 struct GDTR_val GDTR_val;
 
 void init_GDT (void)
 {
-	struct GDTR_val cur_gdtr_val;
+	//struct GDTR_val cur_gdtr_val;
+
+	// clear the global descriptor table.
 	memset (GDT, 0, (sizeof(struct segment_descriptor)*DEFAULT_GDT_SIZE));
+
+	// keep first entry (entry 0) empty)
 	
 	// code segment
 	add_gdt_entry (1, 0, 0xFFFFF, 
@@ -59,21 +63,21 @@ void add_gdt_entry (int gdt_index, unsigned seg_base, unsigned seg_limit,
 {
 	GDT[gdt_index].seg_limit_low = (seg_limit & 0xFFFF);
 	GDT[gdt_index].base_addr_low = (seg_base & 0xFFFF);
-	GDT[gdt_index].base_addr_middle = (seg_base & 0x00FF0000)>>16;
-	GDT[gdt_index].flags_1 = (GBL_DESC_SEGMENT_PRESENT) 
-		| (desc_priv_level << 5) | (desc_type << 4) 
-		| (seg_type);
-	GDT[gdt_index].flags_2 = granularity  | default_operation_size
-		| ((seg_limit & 0x000F0000) >> 16);
-	GDT[gdt_index].base_addr_high = ((seg_base & 0xFF000000) >> 24);
+	GDT[gdt_index].base_addr_middle =(unsigned char)((seg_base & 0x00FF0000)>>16);
+	GDT[gdt_index].flags_1 = (unsigned char)((GBL_DESC_SEGMENT_PRESENT) 
+						 | (desc_priv_level << 5) | (desc_type << 4) 
+						 | (seg_type));
+	GDT[gdt_index].flags_2 =(unsigned char)((uint)granularity  | (uint)default_operation_size
+						| (uint)((seg_limit & 0x000F0000) >> 16));
+	GDT[gdt_index].base_addr_high = (unsigned char)((seg_base & 0xFF000000) >> 24);
 }
 
 
 
-void print_global_desc_table (const struct GDTR_val *GDTR_val)
+void print_global_desc_table (const struct GDTR_val *GDTR_value)
 {
 	int i;
-	struct segment_descriptor *seg_desc = (struct segment_descriptor*)GDTR_val->table_base_addr;
+	struct segment_descriptor *seg_desc = (struct segment_descriptor*)GDTR_value->table_base_addr;
 	unsigned int segment_base_address;
 	unsigned int segment_limit;
 
@@ -81,7 +85,7 @@ void print_global_desc_table (const struct GDTR_val *GDTR_val)
 	unsigned char *ptr;
 	ptr = (unsigned char*)seg_desc;
 	/*
-	for (i = 0; i <= GDTR_val->table_limit; i++){
+	for (i = 0; i <= GDTR_value->table_limit; i++){
 		printf ("%2x ", *ptr);
 		ptr++;
 		if (!((i+1)%4))
@@ -91,7 +95,7 @@ void print_global_desc_table (const struct GDTR_val *GDTR_val)
 	*/
 
 	// seg_desc points to the first segment descriptor
-	for (i=0; i < GDTR_val->table_limit; i+=8, seg_desc+=1)	{
+	for (i=0; i < GDTR_value->table_limit; i+=8, seg_desc+=1)	{
 		printf ("\nSegment Descriptor No.: %d\n", i/8);
 		printf ("Descriptor Address: %x\n", seg_desc);
 		printf ("DWord_H: %8x\n", *(unsigned int*)((unsigned int*)seg_desc+1));

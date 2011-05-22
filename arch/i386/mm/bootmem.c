@@ -350,7 +350,7 @@ void* bm_malloc (uint size)
 	bm_account *s = NULL;
 	s = search_free_acnt_node ();
 	if (!s) {
-		printf ("No free account node found. Cannot allocate memory !\n");
+		//printf ("No free account node found. Cannot allocate memory !\n");
 		return NULL;
 	}
 	//	else

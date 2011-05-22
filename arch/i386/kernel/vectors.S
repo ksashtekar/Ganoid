@@ -14,16 +14,9 @@ ISR\isrnumber:
 
 	.endm
 
-	/*
-	.global ISR0
-ISR0:
-	cli
-	push $0
-	push $0
-	jmp isr_common_stub
-	*/
 
 
+	
 	ISR 0
 	ISR 1 
 	ISR 2 
@@ -67,24 +60,47 @@ ISR0:
 	
 isr_common_stub:
 	pusha
-	mov %ds, %ax
-	push %eax
-	mov $0x10, %ax
-	mov %ax, %ds
-	mov %ax, %es
-	mov %ax, %gs
-	mov %ax, %fs
-	call isr_handler
+	mov 	%ds, %ax
+	push 	%eax
+	mov 	%es, %ax
+	push	%eax
+	mov	%fs, %ax
+	push	%eax
+	mov	%gs, %ax
+	push	%eax
+	mov	$0x10, %ax
+	mov 	%ax, %ds
+	mov 	%ax, %es
+	mov 	%ax, %gs
+	mov 	%ax, %fs
+	call 	isr_handler
 
-	pop %eax 
-	mov %ax, %ds
-	mov %ax, %es
-	mov %ax, %gs
-	mov %ax, %fs
+	lea	schedule_request, %eax
+	cmp	$0,schedule_request
+	jz	schedule_not_pending
+	call 	schedule_pending
+	// EAX contains the new stack pointer
+	mov 	%eax, %esp
+schedule_not_pending:	
+	pop 	%eax 
+	mov 	%ax, %gs
+	pop	%eax
+	mov	%ax, %fs
+	pop	%eax
+	mov	%ax, %es
+	pop	%eax
+	mov 	%ax, %ds
 	popa
-	add $8, %esp // , $8	
+	add $8, %esp // skip the interrupt number and error code
 	sti
 	iret
 
 
-
+/*
+check_gbl_access:
+	push	%eax
+	//lea	r_e, %eax
+	movl	$10, r_e
+	pop	%eax
+	ret
+	*/

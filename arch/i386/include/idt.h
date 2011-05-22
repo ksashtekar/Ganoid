@@ -26,8 +26,8 @@ struct IDTR_val
 
 void init_Interrupt_Descriptor_Table (void);
 void add_idt_entry (int idt_index, unsigned short segment_selector, 
-		    unsigned segment_offset, int descriptor_priv_level, 
-		    int gate_size);
+		    unsigned segment_offset, unsigned int descriptor_priv_level, 
+		    unsigned int gate_size);
 void print_interrupt_desc_table (const struct IDTR_val *IDTR_val);
 
 

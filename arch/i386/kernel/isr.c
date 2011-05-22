@@ -3,11 +3,23 @@
 #include <isr.h>
 #include <idt.h>
 #include <common.h>
+#include <kdebug.h>
 
-isr_handler_func isr_handlers[32+16];
+#define MAX_ISR_NUMBER 32+16
+static isr_handler_func isr_handlers[MAX_ISR_NUMBER] = {0};
+
+static bool isr_dispatcher_initialized = false;
+
+void init_isr_dispatcher (void)
+{
+	for (int i = 0; i < MAX_ISR_NUMBER;i++)
+		isr_handlers[i] = 0;
+
+	isr_dispatcher_initialized = true;
+}
 
 
-void isr_handler (struct isr_registers isr_registers)
+void isr_handler (isr_registers_t isr_registers)
 {
 	isr_handler_func handler;
 	//printf ("interrupt received %d \n", isr_registers.int_no);
@@ -26,17 +38,20 @@ void isr_handler (struct isr_registers isr_registers)
 		outb (0x20, 0x20);
 	}
 	if (isr_handlers[isr_registers.int_no]){
-		printf ("IRQ_%d\n", isr_registers.int_no);
+		//printf ("IRQ_%d\n", isr_registers.int_no);
 		handler = isr_handlers[isr_registers.int_no];
 		(*handler)();
 	}
 }
 
-
-
-
 void add_isr_handler (int irq_no, isr_handler_func isr)
 {
+	_ASSERT_DEBUG(isr_dispatcher_initialized,
+		      EDispatcherNotInitialized,
+		      0,0,0);
+
+	_ASSERT(isr, ENullPointer, isr, 0, 0);
+
 	isr_handlers[irq_no] = isr;
 }
 

@@ -5,6 +5,7 @@
 
 enum desc_privilege_level
 	{
+
 		DESC_SVC = 0,
 		DESC_UNUSED_1,
 		DESC_UNUSED_2,
@@ -25,5 +26,14 @@ void realize_string (char **buf, int flags, int fieldwidth,
 		     int precision, int length_modifier, int conv_specifier, va_list *vl);
 char * itoa (int value, char *str, int base, int unsignedvalue, int fieldwidth);
 int printf (const char *fmt, ...);
+
+
+#define ENTER_CRITICAL_SECTION  unsigned int ___eflags_ = disable_interrupts()
+#define EXIT_CRITICAL_SECTION   restore_interrupts(___eflags_)
+
+#define HZ 1000
+
+
+#define KERNEL_PANIC while (1){}
 
 #endif // KERNEL_H_

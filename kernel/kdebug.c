@@ -14,7 +14,8 @@ static const char debug_strings[][1000] =  {
 	"Multiboot could not find enough space for parsing of data", // 4
 	"Free address received by bootmem allocator is not valid", // 5
 	"The bootmemory allocator is not initialized yet.", // 6
-
+	"The IRQ dispatcher is not initialized yet!", // 7
+	"NULL pointer is not allowed here", // 8
 	"NULL"
 };
 
@@ -140,7 +141,6 @@ void data_dump (void *start_addr, void *end_addr,
 	}
 	
 }
-
 
 
 void display_error_info (const char *cond, int e, 

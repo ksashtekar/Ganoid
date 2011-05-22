@@ -18,3 +18,5 @@ unsigned short inw (unsigned short port)
   asm volatile ("inw %1, %0": "=a"(ret): "dN"(port));
   return ret;
 }
+
+

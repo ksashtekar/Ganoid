@@ -2,8 +2,8 @@
 #include <common.h>
 #include <ktypes.h>
 
-uchar cursor_x, cursor_y;
-const int  max_x = SCREEN_WIDTH, max_y = SCREEN_HEIGHT;
+u8 cursor_x, cursor_y;
+const u8  max_x = SCREEN_WIDTH, max_y = SCREEN_HEIGHT;
 const int KTabWidth = KTAB_WIDTH;
 
 
@@ -15,15 +15,15 @@ void vga_clearscreen ()
   unsigned char vchar = ' ';
   unsigned char backcolor = 0;
   unsigned char forecolor = 15;
-  unsigned char vattr = (backcolor << 4) | (forecolor);
+  unsigned char vattr = (u8)(backcolor << 4) | (forecolor);
 
-  unsigned short vval = (vattr << 8) | (vchar);
+  unsigned short vval = (u16)((u16)(vattr << 8) | (vchar));
 
   int cnt;
   cnt  = max_x * max_y;
   int offset = 0;
 
-  vval = (vattr << 8) | (vchar);
+  vval = (u16)((vattr << 8) | (vchar));
   for (offset = 0; offset < cnt; offset++)
     *(volatile unsigned short*)(vptr + offset) = vval;
   
@@ -39,9 +39,9 @@ static void vga_scroll_up (void)
   unsigned short *vptr = (unsigned short *)VMEM_BASE;
   unsigned char backcolor = 0;
   unsigned char forecolor = 15;
-  unsigned char vattr = (backcolor << 4) | (forecolor);
+  unsigned char vattr = (u8)(backcolor << 4) | (forecolor);
 
-  unsigned short vval = (vattr << 8) | (' ');
+  unsigned short vval = (u8)(vattr << 8) | (' ');
 
   int rows, col;
   for (rows = 0; rows < (max_y-1); rows++){
@@ -55,7 +55,7 @@ static void vga_scroll_up (void)
   }
 
   cursor_x = 0;
-  cursor_y = max_y-1;
+  cursor_y = (u8)(max_y - 1);
   move_cursor (cursor_x, cursor_y);
 
 }
@@ -73,9 +73,9 @@ void vga_putc (const char c)
   unsigned short *vptr = (unsigned short *)VMEM_BASE;
   unsigned char backcolor = 0;
   unsigned char forecolor = 15;
-  unsigned char vattr = (backcolor << 4) | (forecolor);
+  unsigned char vattr = (u8)((backcolor << 4) | (forecolor));
 
-  unsigned short vval = (vattr << 8) | (c);
+  unsigned short vval = (u16)((vattr << 8) | (c));
 
   unsigned int location_offset; 
 
@@ -83,7 +83,7 @@ void vga_putc (const char c)
     vga_scroll_up ();
   }
 
-  location_offset = (cursor_y * 80) + cursor_x;
+  location_offset = (unsigned)((cursor_y * 80) + cursor_x);
 
 
   switch (c){
@@ -94,7 +94,7 @@ void vga_putc (const char c)
       move_cursor (cursor_x, cursor_y);
     break;
   case '\t':
-    cursor_x +=  KTabWidth;
+      cursor_x = (u8)(cursor_x + KTabWidth);
     if (cursor_x >= 80){
       cursor_x = 0;
       cursor_y++;
@@ -110,11 +110,10 @@ void vga_putc (const char c)
     move_cursor (cursor_x, cursor_y);
     break;
   case '\b':
-    cursor_x--;
-    if(cursor_x < 0)
-      cursor_x = 0;
-
-    move_cursor (cursor_x, cursor_y);
+      if(cursor_x > 0) {
+	  cursor_x--;
+	  move_cursor(cursor_x, cursor_y);
+      }
     break;
   default:
     *(volatile unsigned short*)(vptr + location_offset) = vval;
@@ -186,7 +185,7 @@ int SetBit (unsigned short aPortAddressIndex,
 
 void move_cursor (unsigned char x_pos, unsigned char y_pos)
 {
-  unsigned short vram_offset = (y_pos*80)+x_pos;
+    unsigned short vram_offset = (u16)((y_pos*80)+x_pos);
   WriteRegister(CRTCTRL_ADDR_REG,
 		CRTCTRL_CURSORHIGH_INDEX,
 		CRTCTRL_ADDR_REG+1,

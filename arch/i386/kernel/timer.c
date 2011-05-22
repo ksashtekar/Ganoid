@@ -11,6 +11,8 @@
 
 int temp1, temp2;
 
+extern int schedule_request;
+
 // assuming the timer mode 
 void print_timer0_val (void)
 {
@@ -29,18 +31,27 @@ void print_timer0_val (void)
 }
 
 
+/*
+ * We will initialize the 8254 chip here.
+ */
 void init_timer(unsigned int frequency)
 {
-   // Firstly, register our timer callback.
-   //register_interrupt_handler(IRQ0, &timer_callback);
-	
-   // The value we send to the PIT is the value to divide it's input clock
+   // The value we send to the PIT is the value to divide its input clock
    // (1193180 Hz) by, to get our required frequency. Important to note is
    // that the divisor must be small enough to fit into 16-bits.
    unsigned int divisor = 1193180 / frequency;
+	// unsigned int divisor = 1193180 / 10;
 
    // Send the command byte.
-   outb(0x43, 0x34);
+   outb(0x43, 0x36);
+   // outb(0x43, 0x34);
+
+   //   char r = inb (0x43);
+   //   int i = r;
+   //   printf ("0x%x", i);
+   //   while (1){}
+
+   delay (0);
 
    // Divisor has to be sent byte-wise, so split here into upper/lower bytes.
    unsigned char l = (unsigned char)(divisor & 0xFF);
@@ -48,8 +59,9 @@ void init_timer(unsigned int frequency)
 
    // Send the frequency divisor.
    outb(0x40, l);
+   delay (0);
    outb(0x40, h);
-
+   delay (0);
    /*
    while (1){
 	   // print_timer0_val ();
@@ -58,3 +70,14 @@ void init_timer(unsigned int frequency)
    delay (12000000);
    }*/
 } 
+
+
+
+/*
+ * This ISR runs at every OS tick. @ the frequency of HZ. 
+ */
+void timer_isr ()
+{
+    //printf("TIMER\n");
+    schedule_request = 0x10;
+}
