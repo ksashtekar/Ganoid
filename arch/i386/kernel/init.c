@@ -20,6 +20,7 @@
 #include <kbd-handler.h>
 #include <kdebug.h>
 #include <utils.h>
+#include <kernel/idle.h>
 
 int kernel_main (void);
 void my_rtc_irq_handler (void);
@@ -144,7 +145,7 @@ int kernel_main ()
     kernel_thread(process_3, "Tejas", 0);
 
     asm volatile ("sti");	
-    idle_task();
+    do_idle();
     while (1){}
     //kernel_thread (process_2, NULL, 0); 
 
@@ -227,17 +228,3 @@ void irq0_handler (void)
 {
     printf ("into irq0 handler");
 }
-
-void idle_task (void)
-{
-    //schedule_request = 0x10;
-    while (1) {
-	ENTER_CRITICAL_SECTION;
-	printf("IDLE TASK\n"); 
-	EXIT_CRITICAL_SECTION;
-    }
-}
-
-
-
-
