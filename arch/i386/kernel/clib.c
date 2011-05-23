@@ -103,9 +103,9 @@ char *strncpy (char *dest, const char *src, size_t n)
 
 
 
-size_t strlen (const char *s)
+int strlen (const char *s)
 {
-	size_t i=0;
+	int i=0;
 	while (*s++) i++;
 	return i;
 }
@@ -149,7 +149,7 @@ char getc ()
 		r = read_key (&ch, &printable);
 		if (0 == r) 
 			if (printable == true) 
-				return ch;
+			    return (char)ch;
 
 	}
 }

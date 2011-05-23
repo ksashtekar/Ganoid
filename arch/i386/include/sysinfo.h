@@ -74,7 +74,7 @@ union syms
 
 struct multiboot_info 
 {
-	int flags;
+	u32 flags;
         u32 mem_lower; //    (present if flags[0] is set)
         u32 mem_upper; //    (present if flags[0] is set)
         u32 boot_device; //  (present if flags[1] is set)
@@ -142,7 +142,7 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 			 int left_margin, int right_margin, int fillbyte);
 
 
-const char* get_bios_addr_buffer (int *size);
+const char* get_bios_addr_buffer (u32 *size);
 const ram_map* get_rammap_ptr (uint *rammap_nodes);
 #endif // SYSINFO_H_
 

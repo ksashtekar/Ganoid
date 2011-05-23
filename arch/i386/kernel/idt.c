@@ -6,8 +6,6 @@
 
 #define TOTAL_IDT_ENTRIES 256
 
-void isr_handler (void);
-
 struct interrupt_descriptor IDT[TOTAL_IDT_ENTRIES];
 struct IDTR_val IDTR_val;
 

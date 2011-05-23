@@ -23,11 +23,11 @@
 
 // for now only have a static array of empty structures of task_struct. will
 // use dynamic allocation in the future
-struct task_struct task_struct_array[10] __attribute__((aligned(4)));
+task_struct_t task_struct_array[10] __attribute__((aligned(4)));
 static int task_struct_array_index = 0;
 
 
-static struct task_struct* get_free_task_struct (void);
+static task_struct_t* get_free_task_struct (void);
 
 
 static void hello()
@@ -47,7 +47,7 @@ static void hello()
 int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 {
     printf("Start kernel thread creation\n");
-    struct task_struct *t = get_free_task_struct ();
+    task_struct_t *t = get_free_task_struct ();
     printf("Task struct allocated at: 0x%x\n", t);
     t->task_name[0] = 'X';
     t->task_name[1] = '\0';
@@ -103,7 +103,7 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 
 // for now this function is made compatible with the static task struct array.
 // this will change once we implement dynamic allocation for these structures.
-static struct task_struct* get_free_task_struct ()
+static task_struct_t* get_free_task_struct ()
 {
     int allocated_index = 0;
     ENTER_CRITICAL_SECTION;

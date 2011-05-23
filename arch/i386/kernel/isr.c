@@ -7,8 +7,8 @@
 
 #define MAX_ISR_NUMBER 32+16
 static isr_handler_func isr_handlers[MAX_ISR_NUMBER] = {0};
-
 static bool isr_dispatcher_initialized = false;
+void isr_handler(isr_registers_t isr_registers);
 
 void init_isr_dispatcher (void)
 {
@@ -19,7 +19,7 @@ void init_isr_dispatcher (void)
 }
 
 
-void isr_handler (isr_registers_t isr_registers)
+void isr_handler(isr_registers_t isr_registers)
 {
 	isr_handler_func handler;
 	//printf ("interrupt received %d \n", isr_registers.int_no);
@@ -50,7 +50,7 @@ void add_isr_handler (int irq_no, isr_handler_func isr)
 		      EDispatcherNotInitialized,
 		      0,0,0);
 
-	_ASSERT(isr, ENullPointer, isr, 0, 0);
+	_ASSERT(isr, ENullPointer, (unsigned)isr, 0, 0);
 
 	isr_handlers[irq_no] = isr;
 }

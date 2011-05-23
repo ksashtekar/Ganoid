@@ -5,7 +5,7 @@
 
 void HZ_Isr (void);
 int init_schedular (void);
-int add_task_to_run_queue (struct task_struct *task);
+int add_task_to_run_queue (task_struct_t *task);
 void print_all_tasks (void);
 
 

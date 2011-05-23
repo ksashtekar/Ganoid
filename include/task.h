@@ -28,7 +28,7 @@
 
 #define DEFAULT_STACK_SIZE PAGE_SIZE
 
-struct task_struct 
+typedef struct
 {
     char task_name[64];
     unsigned char stack[DEFAULT_STACK_SIZE];
@@ -39,7 +39,7 @@ struct task_struct
 
     struct task_struct *prev;
     struct task_struct *next;
-};
+}task_struct_t;
 
 
 

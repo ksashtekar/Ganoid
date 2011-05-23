@@ -21,18 +21,18 @@
 #include <utils.h>
 
 
-extern struct task_struct idle_task_s;
+extern task_struct_t idle_task_s;
 
 // this is the head of the run queue.
-static struct task_struct *head = NULL;
+static task_struct_t *head = NULL;
 
-struct task_struct *current_task = NULL;
+task_struct_t *current_task = NULL;
 
 int schedule_request = 0x10;
 
 u32 schedule_pending(isr_registers_t isr_reg); // __attribute__((naked));
 
-static void add_idle_task_to_run_queue(struct task_struct *task)
+static void add_idle_task_to_run_queue(task_struct_t *task)
 {
     if(head != NULL) {
 	printf("adding idle task twice ?\n");
@@ -46,9 +46,9 @@ static void add_idle_task_to_run_queue(struct task_struct *task)
 }
 
 
-static struct task_struct* get_next_task (struct task_struct *cur_task)
+static task_struct_t* get_next_task (task_struct_t *cur_task)
 {
-    struct task_struct *next = cur_task->next;
+    task_struct_t *next = cur_task->next;
     //printf("Return: %s\n", next->task_name);
     if (!next) 
 	return head;
@@ -119,9 +119,9 @@ int init_schedular ()
 }
 
 
-int add_task_to_run_queue (struct task_struct *task)
+int add_task_to_run_queue (task_struct_t *task)
 {
-    struct task_struct *node = NULL;
+    task_struct_t *node = NULL;
     printf("Adding %s to run queue ...\n", task->task_name);
 
     if (head == NULL) {
@@ -144,7 +144,7 @@ int add_task_to_run_queue (struct task_struct *task)
 
 void print_all_tasks ()
 {
-    struct task_struct *node = NULL;
+    task_struct_t *node = NULL;
 
     ENTER_CRITICAL_SECTION;
 

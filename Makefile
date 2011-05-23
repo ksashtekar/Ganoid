@@ -15,7 +15,8 @@ VPATH         := arch/$(ARCH)/drivers:arch/$(ARCH)/boot: \
 SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c  \
 	         sysinfo.c kdebug.c bootmem.c constants.c   \
-                 cpu.c kbd-handler.c sched.c process.c idle.c
+                 cpu.c kbd-handler.c sched.c process.c idle.c 	\
+		pgfault.c
 
 TESTSRCS      := tests.c t_bootmem.c t_sprintf.c 
 

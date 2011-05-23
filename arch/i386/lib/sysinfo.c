@@ -21,7 +21,7 @@
 
 
 static struct multiboot_info multiboot_info;
-static u8 bios_addr_map_buffer[sizeof(struct bios_addr_map)*ADDR_MAP_NO_OF_NODES];
+static char bios_addr_map_buffer[sizeof(struct bios_addr_map)*ADDR_MAP_NO_OF_NODES];
 static u8 bios_drive_info_buffer[sizeof(struct bios_drive_info)*BIOS_DRIVE_INFO_NO_OF_NODES];
 static ram_map ram_map_store[RAM_MAP_NODES];
 
@@ -69,7 +69,7 @@ void read_multiboot_information (u32 *multiboot_info_ptr)
 }
 
 
-const char* get_bios_addr_buffer (int *size)
+const char* get_bios_addr_buffer (u32 *size)
 {
 	*size = multiboot_info.mmap_length;
 	return bios_addr_map_buffer;
@@ -82,7 +82,7 @@ static void parse_multiboot_information (void)
 	u32 flags;
 	flags = multiboot_info.flags;
 	printf ("Flags: 0x%x\n", flags);
-	char *drivestr[] = {
+	const char *drivestr[] = {
 		"1st floppy disk\0",
 		"2nd floppy disk\0",
 		"1st hard disk\0",
@@ -103,7 +103,7 @@ static void parse_multiboot_information (void)
 	if (flags & 0x02) {
 		drive = (multiboot_info.boot_device & 0xFF000000)>>24;
 		printf ("Bios drive number: %x: ", drive);
-		char *str;
+		const char *str;
 		switch (drive){ 
 		case 0: str = drivestr[0]; break;
 		case 1: str = drivestr[1]; break;

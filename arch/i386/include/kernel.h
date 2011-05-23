@@ -2,6 +2,7 @@
 #define KERNEL_H_
 
 #include <stdarg.h>
+#include <ktypes.h>
 
 enum desc_privilege_level
 	{
