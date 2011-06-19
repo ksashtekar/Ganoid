@@ -8,7 +8,7 @@
  *  20XX-XX-XX  <put any credits for changes here along with
  *               names>
  */
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <kernel.h>
 
 

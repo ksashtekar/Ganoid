@@ -1,7 +1,7 @@
 #ifndef SYSINFO_H_
 #define SYSINFO_H_
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 
 
 #define MULTIBOOT_RAM 1

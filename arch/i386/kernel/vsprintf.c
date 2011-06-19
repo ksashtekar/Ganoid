@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <kernel.h>
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <string.h>
 
 #include <vga.h>

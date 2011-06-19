@@ -1,4 +1,4 @@
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <common.h>
 #include <vga.h>
 #include <tests.h>

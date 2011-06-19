@@ -6,7 +6,7 @@
  *
  ********************************************************************/
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <string.h>
 #include <kdebug.h>
 #include <sysinfo.h>

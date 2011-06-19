@@ -3,7 +3,7 @@
  */
 
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <string.h>
 #include <gdt.h>
 #include <kernel.h>

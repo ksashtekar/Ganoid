@@ -8,7 +8,7 @@
  *
  ***************************************************************************/
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <kernel.h>
 #include <sysinfo.h>
 #include <bootmem.h>

@@ -1,6 +1,6 @@
 #include <stdarg.h>
 #include <vga.h>
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <clib.h>
 #include <string.h>
 #include <kbd-handler.h>

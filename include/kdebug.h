@@ -1,7 +1,7 @@
 #ifndef KDEBUG_H_
 #define KDEBUG_H_
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 
 
 
