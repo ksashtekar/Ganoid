@@ -18,6 +18,7 @@
 #define ATTRB_MISC_OUTPUT_RD 0x3CC
 
 
+void vga_init(void);
 void vga_clearscreen (void);
 
 

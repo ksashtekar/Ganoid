@@ -23,7 +23,7 @@
 #include <kernel/idle.h>
 
 int kernel_main (void);
-void my_rtc_irq_handler (void);
+
 
 //void my_kbd_interrupt_handler (void);
 
@@ -41,20 +41,14 @@ int kernel_main ()
     int r = 0;
 
     delay (0);
-    //delay (0);
-    //delay (0);
-    //delay (0);
-    //delay (0);
 
-
-    vga_clearscreen ();
-
+    vga_init ();
 
     read_multiboot_information ((u32*)multiboot_struct_ptr);
     display_boot_progress ("Read multiboot information", 0);
     r  = init_bootmem_allocator ();
     display_boot_progress ("Initialize bootmem allocator", r);
-
+    
     init_isr_dispatcher ();
     init_Interrupt_Descriptor_Table ();
     r = init_APIC ();
@@ -65,8 +59,6 @@ int kernel_main ()
 
     init_timer (HZ);
     add_isr_handler (TIMER_INTERRUPT, timer_isr);
-
-
 
     //asm volatile ("sti");
 
@@ -101,37 +93,6 @@ int kernel_main ()
 }
 
 
-void my_rtc_irq_handler (void)
-{
-    static int i= 0;
-    static int sec  = 0;
-    static int min = 45;
-    static int hr = 23;
-    if (!(i%1000)) {
-	sec++;
-	if (sec == 60) {
-	    min++;
-	    sec = 0;
-	    if (min == 60){
-		min = 0;
-		hr++;
-		if (hr == 24)
-		    hr = 0;
-	    }
-	}
-	printf ("%2d:%2d:%2d\n", hr, min, sec);
-    }
-    i++;
-}
-
-
-
-void delay (unsigned long n)
-{
-    if (!n)
-	n = 2000000;
-    while(n--){}
-}
 
 
 void irq0_handler (void);

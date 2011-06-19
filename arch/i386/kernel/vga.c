@@ -9,6 +9,13 @@ const int KTabWidth = KTAB_WIDTH;
 
 static void vga_scroll_up (void);
 
+
+void vga_init()
+{
+    vga_clearscreen();
+}
+
+
 void vga_clearscreen ()
 {
   unsigned short *vptr = (unsigned short *)VMEM_BASE;

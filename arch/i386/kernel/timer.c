@@ -81,3 +81,36 @@ void timer_isr ()
     //printf("TIMER\n");
     schedule_request = 0x10;
 }
+
+#if 0
+void my_rtc_irq_handler (void)
+{
+    static int i= 0;
+    static int sec  = 0;
+    static int min = 45;
+    static int hr = 23;
+    if (!(i%1000)) {
+	sec++;
+	if (sec == 60) {
+	    min++;
+	    sec = 0;
+	    if (min == 60){
+		min = 0;
+		hr++;
+		if (hr == 24)
+		    hr = 0;
+	    }
+	}
+	printf ("%2d:%2d:%2d\n", hr, min, sec);
+    }
+    i++;
+}
+#endif // 0
+
+
+void delay (unsigned long n)
+{
+    if (!n)
+	n = 2000000;
+    while(n--){}
+}

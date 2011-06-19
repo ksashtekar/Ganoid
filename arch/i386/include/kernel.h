@@ -14,8 +14,6 @@ enum desc_privilege_level
 	};
 
 
-void delay (unsigned long n);
-
 int sprintf (char *buf, const char *fmt, ...);
 int vsprintf (char *buf, const char *fmt, va_list vl);
 int uptonext (char **buf, const char **fmt);
