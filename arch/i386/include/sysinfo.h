@@ -132,8 +132,8 @@ enum addr_type
 
 
 typedef struct {
-	uint *start_addr;
-	uint *end_addr;
+	u32 *start_addr;
+	u32 *end_addr;
 }ram_map;
 
 void read_multiboot_information (u32 *multiboot_info_ptr);
@@ -143,7 +143,7 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 
 const char* get_bios_addr_buffer (u32 *size);
-const ram_map* get_rammap_ptr (uint *rammap_nodes);
+const ram_map* get_rammap_ptr (u32 *rammap_nodes);
 #endif // SYSINFO_H_
 
 

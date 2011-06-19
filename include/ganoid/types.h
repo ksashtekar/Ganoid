@@ -14,19 +14,19 @@ typedef unsigned int size_t;
 
 
 typedef unsigned char uchar;
-typedef unsigned int uint;
+typedef unsigned int u32;
 typedef int bool;
 typedef int pid_t;
 
 #define NULL ((void*)0)
 
-#define MAX_UINT ~(uint)0x00
+#define MAX_UINT ~(u32)0x00
 
 #define true  1
 #define TRUE  1
 #define false 0
 #define FALSE 0
 
-extern const uint kdebug_init_val;
+extern const u32 kdebug_init_val;
 
 #endif // KTYPE_H_

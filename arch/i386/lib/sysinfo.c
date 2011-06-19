@@ -31,7 +31,7 @@ static void parse_multiboot_information (void);
 extern int debug_printf;
 
 
-static uint rammap_i = 0;
+static u32 rammap_i = 0;
 
 
 /* Parse the multiboot information.  
@@ -157,8 +157,8 @@ static void parse_multiboot_information (void)
 				_ASSERT((rammap_i<RAM_MAP_NODES),EMultiBootSpaceInsufficient,
 					rammap_i, RAM_MAP_NODES, i);
 				ram_map_store[rammap_i].start_addr = bios_addr_map->base_addr_low;
-				ram_map_store[rammap_i].end_addr = (uint)bios_addr_map->base_addr_low 
-					+ (uint)bios_addr_map->length_low;
+				ram_map_store[rammap_i].end_addr = (u32)bios_addr_map->base_addr_low 
+					+ (u32)bios_addr_map->length_low;
 				rammap_i++;
 			}
 			else
@@ -295,7 +295,7 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 
 
-const ram_map* get_rammap_ptr (uint *rammap_nodes)
+const ram_map* get_rammap_ptr (u32 *rammap_nodes)
 {
 	*rammap_nodes = rammap_i;
 	return ram_map_store;

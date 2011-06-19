@@ -19,10 +19,10 @@ int Test_bootmem (int param1, int param2, void *ptr)
 	// -----------------------------------------------
 	// start with a simple allocation
 #define MAX_ALLOC 3000
-	uint *p_a[MAX_ALLOC];
-	uint *p1, *p2, *p;
+	u32 *p_a[MAX_ALLOC];
+	u32 *p1, *p2, *p;
 
-	uint i_a;
+	u32 i_a;
 
 	for (int i = 0; i < MAX_ALLOC; i++) {
 		p_a[i] = bm_malloc (4097);
