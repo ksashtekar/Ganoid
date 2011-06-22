@@ -1,4 +1,4 @@
-#include <ktypes.h>
+#include <ganoid/types.h>
 
 
-const uint kdebug_init_val = 0xCAFED00D;
+const u32 kdebug_init_val = 0xCAFED00D;

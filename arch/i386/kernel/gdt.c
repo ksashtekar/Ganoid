@@ -3,7 +3,7 @@
  */
 
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <string.h>
 #include <gdt.h>
 #include <kernel.h>
@@ -67,8 +67,8 @@ void add_gdt_entry (int gdt_index, unsigned seg_base, unsigned seg_limit,
 	GDT[gdt_index].flags_1 = (unsigned char)((GBL_DESC_SEGMENT_PRESENT) 
 						 | (desc_priv_level << 5) | (desc_type << 4) 
 						 | (seg_type));
-	GDT[gdt_index].flags_2 =(unsigned char)((uint)granularity  | (uint)default_operation_size
-						| (uint)((seg_limit & 0x000F0000) >> 16));
+	GDT[gdt_index].flags_2 =(unsigned char)((u32)granularity  | (u32)default_operation_size
+						| (u32)((seg_limit & 0x000F0000) >> 16));
 	GDT[gdt_index].base_addr_high = (unsigned char)((seg_base & 0xFF000000) >> 24);
 }
 

@@ -1,6 +1,6 @@
 #include <vga.h>
 #include <common.h>
-#include <ktypes.h>
+#include <ganoid/types.h>
 
 u8 cursor_x, cursor_y;
 const u8  max_x = SCREEN_WIDTH, max_y = SCREEN_HEIGHT;

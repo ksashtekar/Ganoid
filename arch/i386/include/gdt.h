@@ -1,7 +1,7 @@
 #ifndef GDT_H_
 #define GDT_H_
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 
 #define DEFAULT_GDT_SIZE 6
 

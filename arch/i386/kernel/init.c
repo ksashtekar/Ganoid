@@ -1,4 +1,4 @@
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <common.h>
 #include <vga.h>
 #include <tests.h>
@@ -25,12 +25,7 @@
 int kernel_main (void);
 
 
-//void my_kbd_interrupt_handler (void);
-
 extern int multiboot_struct_ptr;
-
-
-
 extern task_struct_t *current_task;
 extern int schedule_request;
 

@@ -1,4 +1,4 @@
-#include <ktypes.h>
+#include <ganoid/types.h>
 #include <utils.h>
 #include <kbd-handler.h>
 #include <isr.h>

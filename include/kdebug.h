@@ -1,7 +1,7 @@
 #ifndef KDEBUG_H_
 #define KDEBUG_H_
 
-#include <ktypes.h>
+#include <ganoid/types.h>
 
 
 
@@ -48,10 +48,10 @@ void data_dump_word (void *start_addr);
 void data_dump_halfword (void *start_addr);
 
 void display_error_info (const char *cond, int e, 
-			 const char* n_v1, uint v1, 
-			 const char* n_v2, uint v2, 
-			 const char* n_v3, uint v3,
-			 const char *file_name, uint line_no);
+			 const char* n_v1, u32 v1, 
+			 const char* n_v2, u32 v2, 
+			 const char* n_v3, u32 v3,
+			 const char *file_name, u32 line_no);
 
 
 #define DUMP_REGISTERS					\
