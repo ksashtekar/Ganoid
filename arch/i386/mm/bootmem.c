@@ -82,7 +82,7 @@ static uint bm_heap_end;
 int init_bootmem_allocator (void)
 {
 	const ram_map *s = NULL;
-	uint rammap_node_count = kdebug_init_val;
+	uint rammap_node_count = KDEBUG_INIT_VAL;
 	int r = 0;
 	uint *start_addr = NULL;
 	uint *end_addr = NULL;
@@ -142,8 +142,8 @@ int init_bootmem_allocator (void)
 	// initialize account area
 	uint asize = ( sizeof (bm_account) * TOTAL_ACNT_NODES );
 	uint abits_req = asize/PAGE_SIZE + 1;
-	uint start_bit = kdebug_init_val;
-	uint end_bit = kdebug_init_val;
+	uint start_bit = KDEBUG_INIT_VAL;
+	uint end_bit = KDEBUG_INIT_VAL;
 	r = find_free_bits_range (abits_req, &start_bit);
 	_ASSERT((0 == r), EBootMemNoMemory, bm_heap_start, bm_heap_size, asize);
 	end_bit = start_bit + abits_req - 1;
@@ -225,7 +225,7 @@ static int find_first_free (uint *bit, uint from)
 
 	//printf ("start_bit = %u, end_bit = %u\n", start_bit, end_bit);
 	
-	uint i = kdebug_init_val;
+	uint i = KDEBUG_INIT_VAL;
 	for (i = start_bit; i <= end_bit; index++){
 		for (; mask && (i <= end_bit); mask = mask<<1, i++) {
 			if (!(free_bitmap[index] & mask)){
@@ -248,7 +248,7 @@ static int find_first_free (uint *bit, uint from)
 
 static int find_free_bits_range (uint total_bits, uint *start_bit)
 {
-	uint first_free_bit = kdebug_init_val;
+	uint first_free_bit = KDEBUG_INIT_VAL;
 	uint l_start_bit = GETBIT(bm_heap_start);
 	uint end_bit = GETBIT(bm_heap_end);
 	bool success = 0;
@@ -259,8 +259,8 @@ static int find_free_bits_range (uint total_bits, uint *start_bit)
 
 
 
-	uint i = kdebug_init_val;
-	uint b = kdebug_init_val;
+	uint i = KDEBUG_INIT_VAL;
+	uint b = KDEBUG_INIT_VAL;
 	uint remaining_bits = total_bits - 1;
 	for (;(l_start_bit + remaining_bits) <= end_bit;){
 		//printf ("Checking from bit %d ... ", l_start_bit);
@@ -308,7 +308,7 @@ static int find_free_bits_range_from (uint total_bits, uint start_bit)
 	printf ("start_bit = %u, end_bit = %u, total_bits = %u\n", 
 		start_bit, end_bit, total_bits);
 
-	uint i = kdebug_init_val;
+	uint i = KDEBUG_INIT_VAL;
 	if ((l_start_bit + total_bits - 1) <= end_bit){
 		if (0 == find_first_free(&first_free_bit, l_start_bit)){
 			if (first_free_bit == l_start_bit){
@@ -344,7 +344,7 @@ void* bm_malloc (uint size)
 	//size = 17000;
  	uint rsize = ROUND_TO_PAGE_SIZE(size);
 	uint bits = rsize/PAGE_SIZE;
-	uint start_bit = kdebug_init_val;
+	uint start_bit = KDEBUG_INIT_VAL;
 
 	// first check if we have space left in our account area
 	bm_account *s = NULL;
