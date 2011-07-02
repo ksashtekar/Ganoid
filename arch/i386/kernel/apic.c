@@ -66,7 +66,7 @@ void read_int_request_reg (int *irr_val_master,
 	delay (2000);
 	*irr_val_slave = inb (0xA0);
 
-	printf ("M_IRR = %x S_IRR = %x\n", *irr_val_master, *irr_val_slave);
+	printk("M_IRR = %x S_IRR = %x\n", *irr_val_master, *irr_val_slave);
 }
 
 void read_in_service_reg (int *isr_val_master, 
@@ -83,6 +83,6 @@ void read_in_service_reg (int *isr_val_master,
 	delay (2000);
 	*isr_val_slave = inb (0xA0);
 
-	printf ("M_ISR = %x S_ISR = %x\n", *isr_val_master, *isr_val_slave);
+	printk("M_ISR = %x S_ISR = %x\n", *isr_val_master, *isr_val_slave);
 }
 

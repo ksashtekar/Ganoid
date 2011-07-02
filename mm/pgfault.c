@@ -17,7 +17,7 @@ void my_page_fault_handler (void);
 
 void my_page_fault_handler (void)
 {
-    printf ("Page_Fault_Occured !");
+    printk ("Page_Fault_Occured !");
     // interrupts are disabled here automatically b'coz we are in isr
     while (1);
 }

@@ -88,39 +88,39 @@ int init_bootmem_allocator (void)
 	u32 *end_addr = NULL;
 
 	s = get_rammap_ptr (&rammap_node_count);
-	printf ("Following information about RAM address map received from multiboot:\n");
+	printk ("Following information about RAM address map received from multiboot:\n");
 	for (u32 i  = 0; i < rammap_node_count; i++)
-		printf ("%d: Start: 0x%8x End: 0x%8x\n", i, s[i].start_addr, s[i].end_addr);
+		printk ("%d: Start: 0x%8x End: 0x%8x\n", i, s[i].start_addr, s[i].end_addr);
 
-	printf ("Area occupied by Ganoid:\n");
-	printf ("Start: 0x%8x\n", &__start_);
-	printf ("End  : 0x%8x\n", &__end_);
+	printk ("Area occupied by Ganoid:\n");
+	printk ("Start: 0x%8x\n", &__start_);
+	printk ("End  : 0x%8x\n", &__end_);
 
 
 	// set the bits which are already occupied. 
 	for (u32 i = 0;i < rammap_node_count; i++){
 		start_addr = s[i].start_addr;
 		end_addr = s[i].end_addr;
-		printf ("Start: 0x%8x End: 0x%8x, ", start_addr, end_addr);
+		printk ("Start: 0x%8x End: 0x%8x, ", start_addr, end_addr);
 		_ASSERT_DEBUG(!((u32)start_addr & 0xFFF), EMultibootRAMAddrBad,
 			      (u32)start_addr, (u32)end_addr, i);
 		if ((u32)&__start_  < (u32)end_addr){
 			// our code/data is in this block
 			_ASSERT_DEBUG(((u32)&__end_ <= (u32)end_addr),EMultibootRAMAddrBad,
 				      (u32)end_addr,(u32)&__start_,(u32)&__end_);
-				printf (", Ganoid area, ");
+				printk (", Ganoid area, ");
 				bm_setbit_range (GETBIT(&__start_), GETBIT(&__end_), 0);
 		}
 		else{
-			printf (" free area, ");
+			printk (" free area, ");
 			//delay (18000000);
 		}
-		printf (" Done\n");
+		printk (" Done\n");
 		delay (2000000);
 	}
 
 	// now initialize the requested heap area.
-	printf ("Trying to allocate heap for bootmemory allocator ...\n");
+	printk ("Trying to allocate heap for bootmemory allocator ...\n");
 	bm_heap_start = ROUND_TO_PAGE_SIZE(&__end_);
 	_ASSERT_DEBUG(((MAX_UINT-bm_heap_start) >= bm_heap_size) ,EBootMemHeapOverFlow, 
 		      (u32)bm_heap_start, (u32)bm_heap_size,(u32)&__end_);
@@ -131,13 +131,13 @@ int init_bootmem_allocator (void)
 
 	// just check if the free bits are really there. A failure would mean we do not have
 	// that much RAM in the AREA requested as heap.
-	printf ("Searching for free ram in requested area ...\n");
+	printk ("Searching for free ram in requested area ...\n");
 	r = find_free_bits_range_from(total_heap_req_bits, heap_start_bit);
 	_ASSERT_DEBUG((0 == r),EBootMemHeapOverFlow,bm_heap_start,
 		      bm_heap_size,(u32)&__end_);
-	printf ("Ok\n");
+	printk ("Ok\n");
 	
-	printf ("Heap start: 0x%8x\nHeap end: 0x%8x\n", bm_heap_start, bm_heap_end);
+	printk ("Heap start: 0x%8x\nHeap end: 0x%8x\n", bm_heap_start, bm_heap_end);
 
 	// initialize account area
 	u32 asize = ( sizeof (bm_account) * TOTAL_ACNT_NODES );
@@ -147,14 +147,14 @@ int init_bootmem_allocator (void)
 	r = find_free_bits_range (abits_req, &start_bit);
 	_ASSERT((0 == r), EBootMemNoMemory, bm_heap_start, bm_heap_size, asize);
 	end_bit = start_bit + abits_req - 1;
-	//printf  ("ddd: %u, %u", start_bit, end_bit);
+	//printk  ("ddd: %u, %u", start_bit, end_bit);
 	//ILP;
 	bm_setbit_range (start_bit, end_bit, 0);
 	start_addr_acnt = (bm_account*)FROMBIT(start_bit);
 	end_addr_acnt = (bm_account*)(FROMBIT(end_bit) + PAGE_SIZE - sizeof(bm_account));
 	// zero initialize the account space.
 	memset (start_addr_acnt, 0, ((u32)end_addr_acnt - (u32)(start_addr_acnt)));
-	printf ("Bootmem allocator accounting area set from 0x%8x to 0x%8x\n", 
+	printk ("Bootmem allocator accounting area set from 0x%8x to 0x%8x\n", 
 		(u32)start_addr_acnt, (u32)end_addr_acnt);
 
 	bootmem_init_complete = 1;
@@ -164,7 +164,7 @@ int init_bootmem_allocator (void)
 
 static void bm_setbit_range (u32 start, u32 end, int init_area)
 {
-	//printf ("setbit range: %u to %u\n", start, end);
+	//printk ("setbit range: %u to %u\n", start, end);
 	for (u32 i = start; i <= end; i++) bm_setbit (i, init_area);
 }
 
@@ -181,9 +181,9 @@ static void bm_setbit (u32 bitno, int init_area)
 	int index = (bitno/32);
 	int offset = (bitno%32);
 	u32 mask = 1 << offset;
-	//printf ("setting bit %d\n .. free_bitmap[index] = 0x%8x\n", bitno, free_bitmap[index]);
+	//printk ("setting bit %d\n .. free_bitmap[index] = 0x%8x\n", bitno, free_bitmap[index]);
 	free_bitmap[index] |= mask;
-	/*printf ("Setbit %u in free_bitmap[%d] = 0x%8x Start_Addr = 0x%8x\n",bitno, 
+	/*printk ("Setbit %u in free_bitmap[%d] = 0x%8x Start_Addr = 0x%8x\n",bitno, 
 	  index, free_bitmap[index], FROMBIT(bitno));*/
 #ifdef GANOID_DEBUG
 	if (init_area)
@@ -223,7 +223,7 @@ static int find_first_free (u32 *bit, u32 from)
 	if (start_bit > end_bit)
 		return 1;
 
-	//printf ("start_bit = %u, end_bit = %u\n", start_bit, end_bit);
+	//printk ("start_bit = %u, end_bit = %u\n", start_bit, end_bit);
 	
 	u32 i = kdebug_init_val;
 	for (i = start_bit; i <= end_bit; index++){
@@ -254,8 +254,8 @@ static int find_free_bits_range (u32 total_bits, u32 *start_bit)
 	bool success = 0;
 
 
-	//printf ("%s\n", __FUNCTION__);
-	//printf ("l_start_bit: %u\ntotal_bits: %u\nend_bit: %u\n", l_start_bit, total_bits, end_bit);
+	//printk ("%s\n", __FUNCTION__);
+	//printk ("l_start_bit: %u\ntotal_bits: %u\nend_bit: %u\n", l_start_bit, total_bits, end_bit);
 
 
 
@@ -263,28 +263,28 @@ static int find_free_bits_range (u32 total_bits, u32 *start_bit)
 	u32 b = kdebug_init_val;
 	u32 remaining_bits = total_bits - 1;
 	for (;(l_start_bit + remaining_bits) <= end_bit;){
-		//printf ("Checking from bit %d ... ", l_start_bit);
+		//printk ("Checking from bit %d ... ", l_start_bit);
 		if (0 == find_first_free(&first_free_bit, l_start_bit)){
 			// we already have one bit free. now
 			// we need to check for remaining
 			// bits in this range
-			//printf ("first free = %d .... others ...", first_free_bit);
+			//printk ("first free = %d .... others ...", first_free_bit);
 			for (b = first_free_bit + 1, i = 0; (i < remaining_bits) && 
 				     (b <= end_bit); i++, b++){ 
-				//printf (" ...%d.", b);
+				//printk (" ...%d.", b);
 				if (bm_getbit (b))
 					break;
 			}
 			if (i == remaining_bits){
-				//printf ("..Success\n");
+				//printk ("..Success\n");
 				success = 1;
 				break;
 			}
 		}
-		//printf ("Fail\n");
+		//printk ("Fail\n");
 		l_start_bit = first_free_bit+i;
 	}
-	//printf ("done\n");
+	//printk ("done\n");
 	if (success){
 		*start_bit = first_free_bit;
 		return 0;
@@ -301,11 +301,11 @@ static int find_free_bits_range_from (u32 total_bits, u32 start_bit)
 	bool success = 0;
 
 	
-	printf ("Heap size requested = 0x%x bytes, starting from address = 0x%x,"
+	printk ("Heap size requested = 0x%x bytes, starting from address = 0x%x,"
 		"upto address 0x%x\n", FROMBIT(total_bits), FROMBIT(start_bit), 
 		FROMBIT(end_bit)+PAGE_SIZE-1);
 
-	printf ("start_bit = %u, end_bit = %u, total_bits = %u\n", 
+	printk ("start_bit = %u, end_bit = %u, total_bits = %u\n", 
 		start_bit, end_bit, total_bits);
 
 	u32 i = kdebug_init_val;
@@ -325,11 +325,11 @@ static int find_free_bits_range_from (u32 total_bits, u32 start_bit)
 		
 	}
 	if (success){
-		printf ("Success\n");
+		printk ("Success\n");
 		return 0;
 	}
 	else{
-		printf ("Fail\n");
+		printk ("Fail\n");
 		return 1;
 	}
 }
@@ -350,15 +350,15 @@ void* bm_malloc (u32 size)
 	bm_account *s = NULL;
 	s = search_free_acnt_node ();
 	if (!s) {
-		//printf ("No free account node found. Cannot allocate memory !\n");
+		//printk ("No free account node found. Cannot allocate memory !\n");
 		return NULL;
 	}
 	//	else
-	//printf ("Free account node found....\n");
+	//printk ("Free account node found....\n");
 
-	//printf ("bits = %d\n", bits);
+	//printk ("bits = %d\n", bits);
 	r = find_free_bits_range (bits, &start_bit);
-	//printf ("r = %d\n", r);
+	//printk ("r = %d\n", r);
 	if (r)
 		return NULL;
 
@@ -370,7 +370,7 @@ void* bm_malloc (u32 size)
 	s->start_bit = start_bit;
 	s->end_bit = end_bit;
 	acnt_i++;
-	//	printf ("Bootmem allocated space: from %u to %u\n", start_bit, end_bit);
+	//	printk ("Bootmem allocated space: from %u to %u\n", start_bit, end_bit);
 
 	return (void*)FROMBIT(start_bit);;
 }
@@ -389,7 +389,7 @@ void bm_free (void *ptr)
 			 bit, 0);
 
 		bm_clearbit_range (s->start_bit, s->end_bit, 1);
-		//		printf ("Bootmem deallocated space: from %u to %u\n", 
+		//		printk ("Bootmem deallocated space: from %u to %u\n", 
 		//s->start_bit, s->end_bit);
 		
 		s->start_bit = 0;
@@ -407,23 +407,23 @@ bm_account* search_bit_in_acnt (u32 bit)
 	bm_account *s = start_addr_acnt;
 	//DUMP_WORD (s);
 
-	//printf ("trying to find bit %u ..", bit);
+	//printk ("trying to find bit %u ..", bit);
 	for (;(s <= end_addr_acnt);s++){
-		// printf ("kaus: %u %u\n", s->start_bit, s->end_bit); 
+		// printk ("kaus: %u %u\n", s->start_bit, s->end_bit); 
 		if (bit <= s->end_bit)
 			if (bit >= s->start_bit){
-				//printf ("found .. ");
+				//printk ("found .. ");
 				r = 0;
 				break;
 			}
 	}
 
 	if (!r) {
-		//printf ("s->start_bit = %u s->end_bit = %u\n", s->start_bit, s->end_bit);
+		//printk ("s->start_bit = %u s->end_bit = %u\n", s->start_bit, s->end_bit);
 		return s;
 	}
 	else{
-		//printf ("not found\n");
+		//printk ("not found\n");
 		return NULL;
 	}
 }

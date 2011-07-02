@@ -6,6 +6,8 @@
 
 #define OS_NAME "Ganoid"
 
+typedef unsigned handle;
+
 typedef unsigned short u16;
 typedef unsigned char u8;
 typedef char          i8;

@@ -16,7 +16,7 @@
 
 #define isdigit(c) ((c >= '0') && (c <= '9'))
 
-int debug_printf = 0;
+int debug_printk = 0;
 
 
 // ignoring base for now.
@@ -340,7 +340,7 @@ int sprintf (char *buf, const char *fmt, ...)
 
 
 
-int printf (const char *fmt, ...)
+int printk(const char *fmt, ...)
 {
     va_list vl;
     int retval = 0;

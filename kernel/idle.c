@@ -24,7 +24,7 @@ void do_idle()
     //schedule_request = 0x10;
     while (1) {
 	//ENTER_CRITICAL_SECTION;
-	printf("IDLE TASK\n"); 
+	printk("IDLE TASK\n"); 
 	//EXIT_CRITICAL_SECTION;
     }
 }

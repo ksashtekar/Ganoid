@@ -132,7 +132,7 @@ void bubble_sort (int *input_array, int *output_array, int elements)
 
 void swap_int (int *element1, int *element2)
 {
-	//printf ("Swap: %d with %d\n", *element1, *element2);
+	//printk ("Swap: %d with %d\n", *element1, *element2);
 	register int t = *element1;
 	*element1 = *element2;
 	*element2 = t;

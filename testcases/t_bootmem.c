@@ -12,7 +12,7 @@
 int Test_bootmem (int param1, int param2, void *ptr)
 {
 	int test_result = 0;
-	printf ("Starting tests of bootmem allocator ... \n");
+	printk ("Starting tests of bootmem allocator ... \n");
 	delay (0);
 	delay (0);
 
@@ -27,7 +27,7 @@ int Test_bootmem (int param1, int param2, void *ptr)
 	for (int i = 0; i < MAX_ALLOC; i++) {
 		p_a[i] = bm_malloc (4097);
 		if (p_a[i] ==  NULL){
-			printf ("Allocation fail for %d\n", i);
+			printk ("Allocation fail for %d\n", i);
 			i_a = i;
 			break;
 		}
@@ -35,7 +35,7 @@ int Test_bootmem (int param1, int param2, void *ptr)
 	for (int i = 0; i <= i_a; i++){
 		bm_free(p_a[i]);
 	}
-	printf ("Allocation and deallocation upto %d completed successfully", i_a);
+	printk ("Allocation and deallocation upto %d completed successfully", i_a);
 
  	delay (0);
  	delay (0);
@@ -46,7 +46,7 @@ int Test_bootmem (int param1, int param2, void *ptr)
 	for (int i = 0; i < MAX_ALLOC; i++) {
 		p_a[i] = bm_malloc (4097);
 		if (p_a[i] ==  NULL){
-			printf ("Allocation fail for %d\n", i);
+			printk ("Allocation fail for %d\n", i);
 			i_a = i;
 			break;
 		}
@@ -54,27 +54,27 @@ int Test_bootmem (int param1, int param2, void *ptr)
 	for (int i = 0; i <= i_a; i++){
 		bm_free(p_a[i]);
 	}
-	printf ("Allocation and deallocation upto %d completed successfully", i_a);
+	printk ("Allocation and deallocation upto %d completed successfully", i_a);
 
 	ILP;
 
 
 	if (!p1){
 		test_result = 1;
-		printf ("Allocation fail\n");
+		printk ("Allocation fail\n");
 		//return test_result;
 	}
 	else
-		printf ("Allocation success\n");
+		printk ("Allocation success\n");
 
 	p2 = bm_malloc (1);
 	if (!p2){
 		test_result = 1;
-		printf ("Allocation fail\n");
+		printk ("Allocation fail\n");
 		//return test_result;
 	}
 	else
-		printf ("Allocation success\n");
+		printk ("Allocation success\n");
 
 	
 // deallocate what we have just allocated
@@ -110,6 +110,6 @@ int Test_bootmem (int param1, int param2, void *ptr)
 		return test_result;
 	}
 
-	printf ("All test pass\n");
+	printk ("All test pass\n");
 	while (1){}
 }

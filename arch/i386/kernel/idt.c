@@ -96,15 +96,15 @@ void print_interrupt_desc_table (const struct IDTR_val *IDTR_value)
 
 	// seg_desc points to the first segment descriptor
 	for (i=0; i < IDTR_value->table_limit; i+=8, int_desc+=1)	{
-		printf ("\nInterrupt Descriptor No.: %d\n", i/8);
-		printf ("Descriptor Address: %x\n", int_desc);
-		printf ("DWord_H: %8x\n", *(unsigned int*)((unsigned int*)int_desc+1));
-		printf ("DWord_L: %8x\n", *(unsigned int*)int_desc);
+		printk ("\nInterrupt Descriptor No.: %d\n", i/8);
+		printk ("Descriptor Address: %x\n", int_desc);
+		printk ("DWord_H: %8x\n", *(unsigned int*)((unsigned int*)int_desc+1));
+		printk ("DWord_L: %8x\n", *(unsigned int*)int_desc);
 		segment_selector = int_desc->segment_selector;
 		segment_offset = ((unsigned int)int_desc->offset_high)<<16 | 
 			(unsigned int)int_desc->offset_low;
-		printf ("Segment selector: %8x\n", segment_selector);
-		printf ("Segment offset: %8x\n", segment_offset);
+		printk ("Segment selector: %8x\n", segment_selector);
+		printk ("Segment offset: %8x\n", segment_offset);
 		delay (18000000);
 	}
 }

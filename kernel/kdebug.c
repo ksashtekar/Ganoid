@@ -22,7 +22,7 @@ static const char debug_strings[][1000] =  {
 
 void kernel_fault (const char *str)
 {
-	printf ("KERN_FAULT: %s\n", str);
+	printk ("KERN_FAULT: %s\n", str);
 	while (1);
 }
 
@@ -74,22 +74,22 @@ void data_dump (void *start_addr, void *end_addr,
 		break;
 	}
 
-	printf ("**************** Kernel debug data dump ***************\n");
+	printk ("**************** Kernel debug data dump ***************\n");
 	int n = line_width/elements_per_line;
 	for (int s = 0; s < 12; s++)
-		printf (" ");
+		printk (" ");
 	for (int i = 0; i != 16; i+=n){
-		printf ("x%x", i);
+		printk ("x%x", i);
 		for (int s = 0; s < fill; s++)
-			printf (" ");
+			printk (" ");
 	}
 
-	//printf ("   ASCII  \n");
+	//printk ("   ASCII  \n");
 
 	int point_printed = 0;
 	int skip;
 	for (u32 i = 0;i < 10;i++){
-		printf ("\n0x%8x: ", addr_print);
+		printk ("\n0x%8x: ", addr_print);
 		for (int j = 0; j < line_width; j += n){
 			u32 addr = (u32)(addr_print | j );
 			if (addr > end_addr){
@@ -105,35 +105,35 @@ void data_dump (void *start_addr, void *end_addr,
 			switch (width){
 			case EDUMP_BYTE:
 				if (skip)
-					printf ("xx");
+					printk ("xx");
 				else
-					printf ("%2x", *(u8*)addr);
+					printk ("%2x", *(u8*)addr);
 				break;
 			case EDUMP_HALFWORD:
 				if (skip)
-					printf ("xxxx");
+					printk ("xxxx");
 				else
-					printf ("%4x", *(u16*)addr);
+					printk ("%4x", *(u16*)addr);
 				break;
 			case EDUMP_WORD:
 				if (skip)
-					printf ("xxxxxxxx");
+					printk ("xxxxxxxx");
 				else
-					printf ("%8x", *(u32*)addr);
+					printk ("%8x", *(u32*)addr);
 				break;
 			}
 			if (!point_printed){
 				if ( (misalign_offset >= j) &&
 				     (misalign_offset < (j + n) )){   
 					point_printed = 1;
-					printf ("^");
+					printk ("^");
 				}
 				else{
-					printf (" ");
+					printk (" ");
 				}
 			}
 			else
-				printf (" ");
+				printk (" ");
 
 			//while (1);
 		}
@@ -149,16 +149,16 @@ void display_error_info (const char *cond, int e,
 			 const char* n_v3, u32 v3,
 			 const char *file_name, u32 line_no)
 {
-	printf ("\n\n\n\n\n");
-	printf ("*********************** Ganoid Fault ***********************\n");
-	printf ("File name     : %s\n", file_name);
-	printf ("Line No       : %d\n", line_no);
-	printf ("Check failed  : %s\n", cond);
-	printf ("Fault desc.   : %s\n", &debug_strings[e][0]);
-	printf ("Value 1       : 0x%8x (%s)\n", v1, n_v1);
-	printf ("Value 2       : 0x%8x (%s)\n", v2, n_v2);
-	printf ("Value 3       : 0x%8x (%s)\n", v3, n_v3);
-	printf ("************************************************************\n");
+	printk ("\n\n\n\n\n");
+	printk ("*********************** Ganoid Fault ***********************\n");
+	printk ("File name     : %s\n", file_name);
+	printk ("Line No       : %d\n", line_no);
+	printk ("Check failed  : %s\n", cond);
+	printk ("Fault desc.   : %s\n", &debug_strings[e][0]);
+	printk ("Value 1       : 0x%8x (%s)\n", v1, n_v1);
+	printk ("Value 2       : 0x%8x (%s)\n", v2, n_v2);
+	printk ("Value 3       : 0x%8x (%s)\n", v3, n_v3);
+	printk ("************************************************************\n");
 }
 
 

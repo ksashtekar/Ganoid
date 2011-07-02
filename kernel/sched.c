@@ -35,7 +35,7 @@ u32 schedule_pending(isr_registers_t isr_reg); // __attribute__((naked));
 static void add_idle_task_to_run_queue(task_struct_t *task)
 {
     if(head != NULL) {
-	printf("adding idle task twice ?\n");
+	printk("adding idle task twice ?\n");
 	while(1){}
     }
 
@@ -49,7 +49,7 @@ static void add_idle_task_to_run_queue(task_struct_t *task)
 static task_struct_t* get_next_task (task_struct_t *cur_task)
 {
     task_struct_t *next = cur_task->next;
-    //printf("Return: %s\n", next->task_name);
+    //printk("Return: %s\n", next->task_name);
     if (!next) 
 	return head;
     else 
@@ -66,14 +66,14 @@ static task_struct_t* get_next_task (task_struct_t *cur_task)
 u32 schedule_pending (isr_registers_t isr_reg)
 {
     schedule_request = 0;
-    //printf("ENTER SCH\n");
+    //printk("ENTER SCH\n");
 	
     u32 *frame_ptr;
     asm volatile ("mov %%ebp, %0\n" : : "m"(frame_ptr));
-    //printf("ESP_B: 0x%x\n", frame_ptr);
+    //printk("ESP_B: 0x%x\n", frame_ptr);
     frame_ptr += 2; // skip over EIP and saved EBP (by this function)
     current_task->esp = frame_ptr;
-    //printf("ESP_A: 0x%x\n", frame_ptr);
+    //printk("ESP_A: 0x%x\n", frame_ptr);
 
 
     // save current process context
@@ -94,7 +94,7 @@ u32 schedule_pending (isr_registers_t isr_reg)
     //sizeof(struct isr_registers));
     // ~test
 
-    //printf("Run: %s III---III\n", current_task->task_name);
+    //printk("Run: %s III---III\n", current_task->task_name);
     //ebp_ = current_task->esp;
     //asm volatile ("mov %0, %%esp\n" : : "m"(esp_));
     //asm volatile ("mov %0, %%esp\n" : : "m"(current_task->esp));
@@ -106,7 +106,7 @@ u32 schedule_pending (isr_registers_t isr_reg)
 
 
 
-    //printf("EXIT SCH\n");
+    //printk("EXIT SCH\n");
     return current_task->esp;
 }
 
@@ -122,10 +122,10 @@ int init_schedular ()
 int add_task_to_run_queue (task_struct_t *task)
 {
     task_struct_t *node = NULL;
-    printf("Adding %s to run queue ...\n", task->task_name);
+    printk("Adding %s to run queue ...\n", task->task_name);
 
     if (head == NULL) {
-	printf ("Adding other tasks before adding idle task?\n");
+	printk ("Adding other tasks before adding idle task?\n");
 	while (1){}
     }
 
@@ -148,11 +148,11 @@ void print_all_tasks ()
 
     ENTER_CRITICAL_SECTION;
 
-    printf ("List of all threads...\n");
+    printk ("List of all threads...\n");
     int i = 1;
     // go till the end of the list ...
     for (node = head; node!=NULL; node = node->next, i++) {
-	printf ("%d: %s\n", i, node->task_name);
+	printk ("%d: %s\n", i, node->task_name);
     }
 
     EXIT_CRITICAL_SECTION;

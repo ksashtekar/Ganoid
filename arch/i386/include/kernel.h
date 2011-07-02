@@ -24,7 +24,7 @@ int get_conv_specifier (const char *fmt);
 void realize_string (char **buf, int flags, int fieldwidth, 
 		     int precision, int length_modifier, int conv_specifier, va_list *vl);
 char * itoa (int value, char *str, int base, int unsignedvalue, int fieldwidth);
-int printf (const char *fmt, ...);
+int printk (const char *fmt, ...);
 
 
 #define ENTER_CRITICAL_SECTION  unsigned int ___eflags_ = disable_interrupts()

@@ -86,27 +86,27 @@ void print_global_desc_table (const struct GDTR_val *GDTR_value)
 	ptr = (unsigned char*)seg_desc;
 	/*
 	for (i = 0; i <= GDTR_value->table_limit; i++){
-		printf ("%2x ", *ptr);
+		printk ("%2x ", *ptr);
 		ptr++;
 		if (!((i+1)%4))
-			printf ("\n");
+			printk ("\n");
 		//delay (1000000);
 	}
 	*/
 
 	// seg_desc points to the first segment descriptor
 	for (i=0; i < GDTR_value->table_limit; i+=8, seg_desc+=1)	{
-		printf ("\nSegment Descriptor No.: %d\n", i/8);
-		printf ("Descriptor Address: %x\n", seg_desc);
-		printf ("DWord_H: %8x\n", *(unsigned int*)((unsigned int*)seg_desc+1));
-		printf ("DWord_L: %8x\n", *(unsigned int*)seg_desc);
+		printk ("\nSegment Descriptor No.: %d\n", i/8);
+		printk ("Descriptor Address: %x\n", seg_desc);
+		printk ("DWord_H: %8x\n", *(unsigned int*)((unsigned int*)seg_desc+1));
+		printk ("DWord_L: %8x\n", *(unsigned int*)seg_desc);
 		segment_base_address = ((unsigned int)seg_desc->base_addr_high)<<24 |
 			((unsigned int)seg_desc->base_addr_middle)<<16 |
 			((unsigned int)seg_desc->base_addr_low);
 		segment_limit = ((((unsigned int)(seg_desc->flags_2)) & 0x0F)<<16) |
 			(unsigned int)seg_desc->seg_limit_low;
-		printf ("Segment Base Address: %8x\n", segment_base_address);
-		printf ("Segment Limit: %8x\n", segment_limit);
+		printk ("Segment Base Address: %8x\n", segment_base_address);
+		printk ("Segment Limit: %8x\n", segment_limit);
 		delay (18000000);
 	}
 }

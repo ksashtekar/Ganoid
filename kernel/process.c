@@ -34,7 +34,7 @@ static void hello()
 {
     while(1){
 	ENTER_CRITICAL_SECTION;
-	printf("Process exited\n");
+	printk("Process exited\n");
 	EXIT_CRITICAL_SECTION;
     }
 }
@@ -46,9 +46,9 @@ static void hello()
  */
 int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 {
-    printf("Start kernel thread creation\n");
+    printk("Start kernel thread creation\n");
     task_struct_t *t = get_free_task_struct ();
-    printf("Task struct allocated at: 0x%x\n", t);
+    printk("Task struct allocated at: 0x%x\n", t);
     t->task_name[0] = 'X';
     t->task_name[1] = '\0';
 
@@ -58,7 +58,7 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
     *sptr = arg; // argument for first function in the new thread
     sptr--;
     *sptr = hello; // dummy EIP ... this would be the place where 'fn'
-    printf("%s: 0x%x\n", arg, sptr);
+    printk("%s: 0x%x\n", arg, sptr);
     // would return ... FIXME: Fill this later with OS exit
     // function
     const char *func_sptr = sptr;
@@ -95,7 +95,7 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 
     t->esp = i;
 
-    //printf("Add just created thread to active list...\n");
+    //printk("Add just created thread to active list...\n");
     add_task_to_run_queue(t);
 }
 

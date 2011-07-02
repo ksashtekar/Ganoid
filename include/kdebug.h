@@ -59,33 +59,33 @@ void display_error_info (const char *cond, int e,
 	{						\
 	int reg;					\
 	asm volatile ("mov %%eax, %0" : : "m"(reg));    \
-	printf ("EAX : 0x%8x\t", reg);			\
+	printk ("EAX : 0x%8x\t", reg);			\
 	asm volatile ("mov %%ebx, %0" : : "m"(reg));    \
-	printf ("EBX : 0x%8x\n", reg);			\
+	printk ("EBX : 0x%8x\n", reg);			\
 	asm volatile ("mov %%ecx, %0" : : "m"(reg));    \
-	printf ("ECX : 0x%8x\t", reg);			\
+	printk ("ECX : 0x%8x\t", reg);			\
 	asm volatile ("mov %%edx, %0" : : "m"(reg));    \
-	printf ("EDX : 0x%8x\n", reg);			\
+	printk ("EDX : 0x%8x\n", reg);			\
 	asm volatile ("mov %%esi, %0" : : "m"(reg));    \
-	printf ("ESI : 0x%8x\t", reg);			\
+	printk ("ESI : 0x%8x\t", reg);			\
 	asm volatile ("mov %%edi, %0" : : "m"(reg));    \
-	printf ("EDI : 0x%8x\n", reg);			\
+	printk ("EDI : 0x%8x\n", reg);			\
 	asm volatile ("mov %%ebp, %0" : : "m"(reg));    \
-	printf ("EBP : 0x%8x\t", reg);			\
+	printk ("EBP : 0x%8x\t", reg);			\
 	asm volatile ("mov %%esp, %0" : : "m"(reg));    \
-	printf ("ESP : 0x%8x\n", reg);			\
+	printk ("ESP : 0x%8x\n", reg);			\
         asm volatile ("mov %%cs, %0" : : "m"(reg));	\
-	printf ("CS  : 0x%8x\t", reg);			\
+	printk ("CS  : 0x%8x\t", reg);			\
 	asm volatile ("mov %%ds, %0" : : "m"(reg));	\
-	printf ("DS  : 0x%8x\n", reg);			\
+	printk ("DS  : 0x%8x\n", reg);			\
 	asm volatile ("mov %%ss, %0" : : "m"(reg));	\
-	printf ("SS  : 0x%8x\t", reg);			\
+	printk ("SS  : 0x%8x\t", reg);			\
 	asm volatile ("mov %%es, %0" : : "m"(reg));	\
-	printf ("ES  : 0x%8x\n", reg);			\
+	printk ("ES  : 0x%8x\n", reg);			\
 	asm volatile ("mov %%fs, %0" : : "m"(reg));	\
-	printf ("FS  : 0x%8x\t", reg);			\
+	printk ("FS  : 0x%8x\t", reg);			\
 	asm volatile ("mov %%gs, %0" : : "m"(reg));	\
-	printf ("GS  : 0x%8x\n", reg);			\
+	printk ("GS  : 0x%8x\n", reg);			\
 	asm volatile ("1:");				\
 	asm volatile ("jmp 1b");			\
 	}

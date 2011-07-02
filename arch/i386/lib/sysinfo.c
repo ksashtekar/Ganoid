@@ -28,7 +28,7 @@ static ram_map ram_map_store[RAM_MAP_NODES];
 static void parse_multiboot_information (void);
 
 // ~temp
-extern int debug_printf;
+extern int debug_printk;
 
 
 static u32 rammap_i = 0;
@@ -81,7 +81,7 @@ static void parse_multiboot_information (void)
 	char na[]="Not Specified";
 	u32 flags;
 	flags = multiboot_info.flags;
-	printf ("Flags: 0x%x\n", flags);
+	printk ("Flags: 0x%x\n", flags);
 	const char *drivestr[] = {
 		"1st floppy disk\0",
 		"2nd floppy disk\0",
@@ -91,18 +91,18 @@ static void parse_multiboot_information (void)
 	};
 	u32 drive;
 
-	printf ("Amount of lower memory: ");
+	printk ("Amount of lower memory: ");
 	if (flags & 0x01) {
-		printf ("%d KB\n", multiboot_info.mem_lower);
-		printf ("Amount of upper memory: %d KB\n", multiboot_info.mem_upper);
+		printk ("%d KB\n", multiboot_info.mem_lower);
+		printk ("Amount of upper memory: %d KB\n", multiboot_info.mem_upper);
 	}
 	else{
-		printf ("%s\n", na);
+		printk ("%s\n", na);
 	}
 
 	if (flags & 0x02) {
 		drive = (multiboot_info.boot_device & 0xFF000000)>>24;
-		printf ("Bios drive number: %x: ", drive);
+		printk ("Bios drive number: %x: ", drive);
 		const char *str;
 		switch (drive){ 
 		case 0: str = drivestr[0]; break;
@@ -113,21 +113,21 @@ static void parse_multiboot_information (void)
 		}
 
 
-		printf ("%s\n", str);
-		printf ("part1: %x\n", ((multiboot_info.boot_device & 0x00FF0000)>>16));
-		printf ("part2: %x\n", ((multiboot_info.boot_device & 0x0000FF00)>>8));
-		printf ("part3: %x\n", (multiboot_info.boot_device & 0x000000FF));
+		printk ("%s\n", str);
+		printk ("part1: %x\n", ((multiboot_info.boot_device & 0x00FF0000)>>16));
+		printk ("part2: %x\n", ((multiboot_info.boot_device & 0x0000FF00)>>8));
+		printk ("part3: %x\n", (multiboot_info.boot_device & 0x000000FF));
 	}
 	else
-		printf ("Boot device unknown\n");
+		printk ("Boot device unknown\n");
 
 	if (flags & 0x04) 
-		printf ("Command line: %s\n", (char*)multiboot_info.cmdline);
+		printk ("Command line: %s\n", (char*)multiboot_info.cmdline);
 	else
-		printf ("Command line data not present\n");
+		printk ("Command line data not present\n");
 
-	printf ("Module information NOT parsed for now\n");
-	printf ("Symbol table information not parsed\n");
+	printk ("Module information NOT parsed for now\n");
+	printk ("Symbol table information not parsed\n");
 
 	if ((flags & 0x20) && multiboot_info.mmap_length){
 		struct bios_addr_map *bios_addr_map;
@@ -136,24 +136,24 @@ static void parse_multiboot_information (void)
 		bios_addr_map = (struct bios_addr_map*)bios_addr_map_buffer;
 		while (size){
 			i++;
-			//printf ("******* Node %d ********\n", i);
-			//printf ("Node address : 0x%x\n", bios_addr_map);
-			//printf ("Node size    : %d\n", bios_addr_map->node_size);
-			printf ("0x%x%8x", bios_addr_map->base_addr_high, 
+			//printk ("******* Node %d ********\n", i);
+			//printk ("Node address : 0x%x\n", bios_addr_map);
+			//printk ("Node size    : %d\n", bios_addr_map->node_size);
+			printk ("0x%x%8x", bios_addr_map->base_addr_high, 
 				bios_addr_map->base_addr_low);
-			printf (", 0x%x%8x ", bios_addr_map->length_high,
+			printk (", 0x%x%8x ", bios_addr_map->length_high,
 				bios_addr_map->length_low, bios_addr_map->length_low/1000);
 			if (bios_addr_map->length_low/1000000000)
-				printf ("(%d) GB", bios_addr_map->length_low/1000000000);
+				printk ("(%d) GB", bios_addr_map->length_low/1000000000);
 			else if (bios_addr_map->length_low/1000000)
-				printf ("(%d) MB", bios_addr_map->length_low/1000000);
+				printk ("(%d) MB", bios_addr_map->length_low/1000000);
 			else if (bios_addr_map->length_low/1000)
-				printf ("(%d) KB", bios_addr_map->length_low/1000);
+				printk ("(%d) KB", bios_addr_map->length_low/1000);
 			else
-				printf ("(%d) Bytes", bios_addr_map->length_low);
+				printk ("(%d) Bytes", bios_addr_map->length_low);
 
 			if (bios_addr_map->type == MULTIBOOT_RAM){
-				printf (", RAM\n");
+				printk (", RAM\n");
 				_ASSERT((rammap_i<RAM_MAP_NODES),EMultiBootSpaceInsufficient,
 					rammap_i, RAM_MAP_NODES, i);
 				ram_map_store[rammap_i].start_addr = bios_addr_map->base_addr_low;
@@ -162,7 +162,7 @@ static void parse_multiboot_information (void)
 				rammap_i++;
 			}
 			else
-				printf (", Reserved\n");
+				printk (", Reserved\n");
 
 			size -= (bios_addr_map->node_size + sizeof (bios_addr_map->node_size));
 			bios_addr_map = (struct bios_addr_map*)((u32)bios_addr_map + 
@@ -177,39 +177,39 @@ static void parse_multiboot_information (void)
 
 		u32 i = 0;
 		u32 size = multiboot_info.drives_length;
-		//printf ("total size: %d\n", size);
+		//printk ("total size: %d\n", size);
 		while(size){
 			i++;
-			//printf ("********** Node %d *********\n", i++);
-			//printf ("%d", bios_drive_info->size);
-			printf ("%d", bios_drive_info->drive_no);
-			if (bios_drive_info->drive_mode == 0) printf (", CHS");
-			else if (bios_drive_info ->drive_mode == 1) printf (", LBA mode");
-			else printf (", Unknown mode");
+			//printk ("********** Node %d *********\n", i++);
+			//printk ("%d", bios_drive_info->size);
+			printk ("%d", bios_drive_info->drive_no);
+			if (bios_drive_info->drive_mode == 0) printk (", CHS");
+			else if (bios_drive_info ->drive_mode == 1) printk (", LBA mode");
+			else printk (", Unknown mode");
 			
-			printf (", %d-C", bios_drive_info->drive_cylinders);
-			printf (", %d-H", bios_drive_info->drive_heads);
-			printf (", %d-S", bios_drive_info->drive_sectors);
+			printk (", %d-C", bios_drive_info->drive_cylinders);
+			printk (", %d-H", bios_drive_info->drive_heads);
+			printk (", %d-S", bios_drive_info->drive_sectors);
 			u16 *start_port_array = &bios_drive_info->start_port_array;
 			while (*start_port_array){
-				printf (", %d", *start_port_array);
+				printk (", %d", *start_port_array);
 				start_port_array++;
 			}
-			printf ("\n");;
+			printk ("\n");;
 
 			size -= bios_drive_info->size;
-			//printf  ("size remaining %d", size);
+			//printk  ("size remaining %d", size);
 		}
 	}
 
-	printf ("ROM configuration table not parsed!\n");
+	printk ("ROM configuration table not parsed!\n");
 
 	if (flags & 0x200)
-		printf ("Bootloader name: %s\n", (char*)multiboot_info.boot_loader_name);
+		printk ("Bootloader name: %s\n", (char*)multiboot_info.boot_loader_name);
 
-	printf ("APM information not parsed\n");
+	printk ("APM information not parsed\n");
 
-	printf ("VBE information not parsed\n");
+	printk ("VBE information not parsed\n");
 
 
 }
@@ -228,15 +228,15 @@ void display_boot_progress (const char *message, bool result)
 	columnlize_string (message, column_str, SCREEN_WIDTH, 
 			   left_margin, right_margin, '.');
 
-	printf ("%s", column_str);
+	printk ("%s", column_str);
 	
 	if (result)
 		pstr = fail_str;
 	
 	for (int i = 0; i < (right_margin - strlen(pstr) - 2); i++)
-		printf (".");
+		printk (".");
 
-	printf ("[%s]", pstr);
+	printk ("[%s]", pstr);
 
 	//	while (1);
 }
@@ -267,8 +267,8 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 	for (ip = 0, op = 0; *istr; ){
 		if (left_margin) {
-			for (int i = 0; i < tabs; i++) sprintf(ostr++, "\t");
-			for (int i = 0; i < leftfillspace; i++) sprintf(ostr++, " ");
+			for (int i = 0; i < tabs; i++) sprintk(ostr++, "\t");
+			for (int i = 0; i < leftfillspace; i++) sprintk(ostr++, " ");
 		}
 
 		for (r = 0; (r < single_line_str_len) && (*istr) && (*istr != '\n'); r++)

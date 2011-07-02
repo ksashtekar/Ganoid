@@ -21,7 +21,7 @@ unsigned char raw_cpu_data_buffer[RAW_CPU_DATA_BUFFER_SIZE] = {0};
 void print_cpuid_info (void)
 {
 	for (int i = 0; i < 16; i++){
-		printf ("%x: %c\n", raw_cpu_data_buffer[i], raw_cpu_data_buffer[i]); 
+		printk ("%x: %c\n", raw_cpu_data_buffer[i], raw_cpu_data_buffer[i]); 
 	}
 
 	while(1);

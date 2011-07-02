@@ -27,7 +27,7 @@ void print_timer0_val (void)
 
 	timer_val = (timer_val | (temp <<8));
 
-	printf ("%d\n", timer_val);
+	printk ("%d\n", timer_val);
 }
 
 
@@ -48,7 +48,7 @@ void init_timer(unsigned int frequency)
 
    //   char r = inb (0x43);
    //   int i = r;
-   //   printf ("0x%x", i);
+   //   printk ("0x%x", i);
    //   while (1){}
 
    delay (0);
@@ -78,7 +78,7 @@ void init_timer(unsigned int frequency)
  */
 void timer_isr ()
 {
-    //printf("TIMER\n");
+    //printk("TIMER\n");
     schedule_request = 0x10;
 }
 
@@ -101,7 +101,7 @@ void my_rtc_irq_handler (void)
 		    hr = 0;
 	    }
 	}
-	printf ("%2d:%2d:%2d\n", hr, min, sec);
+	printk ("%2d:%2d:%2d\n", hr, min, sec);
     }
     i++;
 }

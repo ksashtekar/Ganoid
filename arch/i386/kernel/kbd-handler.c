@@ -276,7 +276,7 @@ void kbd_isr ()
 	
 	head++;
 	if (KBD_BUFFER_SIZE == head) {
-		//printf ("kbd buff overflow");
+		//printk ("kbd buff overflow");
 		head = 0;
 	}
 	if (head == tail) 
@@ -289,12 +289,12 @@ void kbd_isr ()
 	
 	/*
 	// debug
-	printf ("--------- Array ----------\n");
-	printf ("head = %d\ntail = %d\n", head, tail);
+	printk ("--------- Array ----------\n");
+	printk ("head = %d\ntail = %d\n", head, tail);
 	for (int i = 0; i<KBD_BUFFER_SIZE; i++) {
-		printf ("0x%2x\n", key_buffer[i]);
+		printk ("0x%2x\n", key_buffer[i]);
 	}
-	printf ("--------------------------\n");
+	printk ("--------------------------\n");
 	//debug
 	*/
 	
@@ -330,16 +330,16 @@ int read_key (int *key, bool *printable)
 	for (unsigned int i = 0; i < sizeof(testarr); i++){
 		keyboard_state_machine(testarr[i], &o, &make);
 		if (o) {
-			printf ("Key: %2x", o);
+			printk ("Key: %2x", o);
 			if (make)
-				printf ("  :: MAKE\n");
+				printk ("  :: MAKE\n");
 			else
-				printf ("  :: BREAK\n");
+				printk ("  :: BREAK\n");
 		}
 		else
-			printf ("KEY IGNORED\n");
+			printk ("KEY IGNORED\n");
 	}
-	printf ("\n PARSE COMPLETE");
+	printk ("\n PARSE COMPLETE");
 	while (1){}
 	// ~test code
 	*/
@@ -361,7 +361,7 @@ int read_key (int *key, bool *printable)
 		if (make) // send a key only when we have a break.
 			break;
 		//		else if (scan_code) 
-		//printf ("%2x received but IGNORED\n", scan_code);
+		//printk ("%2x received but IGNORED\n", scan_code);
 
 		make = 0;
 		repeat_key = 0;
@@ -375,7 +375,7 @@ int read_key (int *key, bool *printable)
 	int val;
 	int r;
 	if (make || repeat_key) {
-		//printf ("%2x", scan_code);
+		//printk ("%2x", scan_code);
 		
 		if (basic_key) {
 			r = binary_search_key(scan_code, &basic_keymap, 
@@ -406,7 +406,7 @@ int read_key (int *key, bool *printable)
 		}
 		/*
 		if (val & 0x100)
-		printf ("%c", val);
+		printk ("%c", val);
 		*/
 		return 0;
 	
@@ -458,7 +458,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 
  	switch (state){
 	case STATE_INIT:
-		//printf ("<<< STATE_INIT >>>\n");
+		//printk ("<<< STATE_INIT >>>\n");
 		if (i == 0xF0) { // ignore
 			// ignore the next key after this
 			state = STATE_IGNORE;
@@ -474,7 +474,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		state = STATE_BASIC_BREAK_EXPEC;
 		break;
 	case STATE_BASIC_BREAK_EXPEC:
-		//printf ("<<< STATE_BASIC_BREAK_EXPEC >>>\n");
+		//printk ("<<< STATE_BASIC_BREAK_EXPEC >>>\n");
 		if (i == 0xF0) {
 			state = STATE_BASIC_BREAK_ES;
 			goto STATE_MACHINE_EXIT;
@@ -487,7 +487,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		// keep state unchanged...
 		break;
 	case STATE_BASIC_BREAK_ES:
-		//printf ("<<< STATE_BASIC_BREAK_ES >>>\n");
+		//printk ("<<< STATE_BASIC_BREAK_ES >>>\n");
 		if (i == 0xE0) {
 			state = STATE_IGNORE;
 			goto STATE_MACHINE_EXIT;
@@ -502,7 +502,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		state = STATE_INIT;
 		break;
 	case STATE_EXT_MAKE_ES:
-		//printf ("<<< STATE_EXT_MAKE_ES >>>\n");
+		//printk ("<<< STATE_EXT_MAKE_ES >>>\n");
 		if (i == 0xE0) {
 			state = STATE_IGNORE;
 			goto STATE_MACHINE_EXIT;
@@ -517,7 +517,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		state = STATE_EXT_BREAK_EXPEC;
 		break;
 	case STATE_EXT_BREAK_EXPEC:
-		//printf ("<<< STATE_EXT_BREAK_EXPEC >>>\n");
+		//printk ("<<< STATE_EXT_BREAK_EXPEC >>>\n");
 		if (i == 0xE0) {
 			state = STATE_EXT_BREAK_ES_1;
 			goto STATE_MACHINE_EXIT;
@@ -529,7 +529,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		state = STATE_INIT;
 		break;
 	case STATE_EXT_BREAK_ES_1:
-		//printf ("<<< STATE_EXT_BREAK_ES_1 >>>\n");
+		//printk ("<<< STATE_EXT_BREAK_ES_1 >>>\n");
 		if (i == 0xF0) {
 			state = STATE_EXT_BREAK_ES_2;
 			goto STATE_MACHINE_EXIT;
@@ -546,7 +546,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		state = STATE_EXT_BREAK_EXPEC;
 		break;
 	case STATE_EXT_BREAK_ES_2:
-		//printf ("<<< STATE_EXT_BREAK_ES_2 >>>\n");
+		//printk ("<<< STATE_EXT_BREAK_ES_2 >>>\n");
 		if (i == 0xF0) {
 			state = STATE_IGNORE;
 			goto STATE_MACHINE_EXIT;
@@ -561,7 +561,7 @@ static void keyboard_state_machine (unsigned char i, int *o,
 		state = STATE_INIT;
 		break;
 	case STATE_IGNORE:
-		//printf ("<<< STATE_IGNORE >>>\n");
+		//printk ("<<< STATE_IGNORE >>>\n");
 		state = STATE_INIT;
 		break;
 	default:
@@ -578,7 +578,7 @@ static void map_scancode_to_key (int scancode, bool *printable)
 {
 	int val;
 	binary_search_key(0x1C, &basic_keymap, sizeof(basic_keymap)/sizeof(struct keymap), &val);
-	printf ("%c", val);
+	printk ("%c", val);
 
 }
 
@@ -617,27 +617,27 @@ static int binary_search_key (int scan_code, struct keymap *map,
 			break;
 		}
 
-		//printf ("{%d, %d, %d} ", min_index, median_index, max_index);
+		//printk ("{%d, %d, %d} ", min_index, median_index, max_index);
 
 		if (scan_code > map[median_index].scan_code) {
 			// upper block
-			//printf ("upper\n");
+			//printk ("upper\n");
 			min_index = median_index;
 		}
 		else {
 			// lower block
-			//printf ("lower\n");
+			//printk ("lower\n");
 			max_index = median_index;
 		}
 	}
 
 	if (found) {
-		//printf ("Found at index %d\n", median_index);
+		//printk ("Found at index %d\n", median_index);
 		*value = map[median_index].value;
 		return 0;
 	}
 	else {
-		//printf ("Not found\n");
+		//printk ("Not found\n");
 		return -1;
 	}
 }

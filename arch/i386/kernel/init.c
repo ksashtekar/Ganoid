@@ -59,7 +59,7 @@ int kernel_main ()
 
     /*
       init_paging ();
-      printf ("i am now working in paging mode\n");
+      printk ("i am now working in paging mode\n");
       int i = 10;
       p = (unsigned*)&i;
       p = (unsigned*)0x10000000;
@@ -93,5 +93,5 @@ int kernel_main ()
 void irq0_handler (void);
 void irq0_handler (void)
 {
-    printf ("into irq0 handler");
+    printk ("into irq0 handler");
 }
