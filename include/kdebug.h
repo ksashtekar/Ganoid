@@ -5,8 +5,7 @@
 
 
 
-
-
+#define  KDEBUG_INIT_VAL  0xCAFED00D
 
 
 

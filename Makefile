@@ -32,7 +32,7 @@ DEPENDS       += $(patsubst %.c,.%.d,$(TESTSRCS))
 
 BIN           := ganoid-$(VERSION)
 CC            := gcc -g -c -std=gnu99 
-CPPFLAGS      := -Wa,-march=i486 -mtune=generic -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0 -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations  -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Waddress -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var -Wpointer-sign
+CPPFLAGS      := -Wa,-march=i686 -mtune=generic -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0 -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations  -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Waddress -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var -Wpointer-sign
 
 #AS	      := as	
 #ASFLAGS	      := -march=i686  	

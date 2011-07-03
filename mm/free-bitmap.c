@@ -1,4 +1,21 @@
+/***************************************************************************
+ * This file implements the bootmem allocator.
+ * The basic reason for the existence of bootmem allcator is non-existence 
+ * of the kernel memory allocator at kernel startup. Before the full blown 
+ * kernel memory allcator is available this allocator will satisfy memory 
+ * needs of kernel init code
+ *
+ *
+ ***************************************************************************/
+
 #include <ganoid/types.h>
+#include <kernel.h>
+#include <sysinfo.h>
+#include <bootmem.h>
+#include <kdebug.h>
+#include <mm.h>
+#include <string.h>
+
 
 typedef struct {
 	u32 start_bit;
@@ -16,7 +33,7 @@ static int bootmem_init_complete = 0;
 
 
 /*
- * There could be maximum 1048576 pages available. Of course not all of them
+ * There could be maximum 1048576 pages available. Ofcourse not all of them
  * are usable as RAM as some of them are mapped to other hardware devices.
  * Hence, we need get information from the hardware and accordingly set only 
  * bit which have usable RAM
@@ -65,7 +82,7 @@ static u32 bm_heap_end;
 int init_bootmem_allocator (void)
 {
 	const ram_map *s = NULL;
-	u32 rammap_node_count = kdebug_init_val;
+	u32 rammap_node_count = KDEBUG_INIT_VAL;
 	int r = 0;
 	u32 *start_addr = NULL;
 	u32 *end_addr = NULL;
@@ -125,8 +142,8 @@ int init_bootmem_allocator (void)
 	// initialize account area
 	u32 asize = ( sizeof (bm_account) * TOTAL_ACNT_NODES );
 	u32 abits_req = asize/PAGE_SIZE + 1;
-	u32 start_bit = kdebug_init_val;
-	u32 end_bit = kdebug_init_val;
+	u32 start_bit = KDEBUG_INIT_VAL;
+	u32 end_bit = KDEBUG_INIT_VAL;
 	r = find_free_bits_range (abits_req, &start_bit);
 	_ASSERT((0 == r), EBootMemNoMemory, bm_heap_start, bm_heap_size, asize);
 	end_bit = start_bit + abits_req - 1;
@@ -208,7 +225,7 @@ static int find_first_free (u32 *bit, u32 from)
 
 	//printk ("start_bit = %u, end_bit = %u\n", start_bit, end_bit);
 	
-	u32 i = kdebug_init_val;
+	u32 i = KDEBUG_INIT_VAL;
 	for (i = start_bit; i <= end_bit; index++){
 		for (; mask && (i <= end_bit); mask = mask<<1, i++) {
 			if (!(free_bitmap[index] & mask)){
@@ -231,7 +248,7 @@ static int find_first_free (u32 *bit, u32 from)
 
 static int find_free_bits_range (u32 total_bits, u32 *start_bit)
 {
-	u32 first_free_bit = kdebug_init_val;
+	u32 first_free_bit = KDEBUG_INIT_VAL;
 	u32 l_start_bit = GETBIT(bm_heap_start);
 	u32 end_bit = GETBIT(bm_heap_end);
 	bool success = 0;
@@ -242,8 +259,8 @@ static int find_free_bits_range (u32 total_bits, u32 *start_bit)
 
 
 
-	u32 i = kdebug_init_val;
-	u32 b = kdebug_init_val;
+	u32 i = KDEBUG_INIT_VAL;
+	u32 b = KDEBUG_INIT_VAL;
 	u32 remaining_bits = total_bits - 1;
 	for (;(l_start_bit + remaining_bits) <= end_bit;){
 		//printk ("Checking from bit %d ... ", l_start_bit);
@@ -291,7 +308,7 @@ static int find_free_bits_range_from (u32 total_bits, u32 start_bit)
 	printk ("start_bit = %u, end_bit = %u, total_bits = %u\n", 
 		start_bit, end_bit, total_bits);
 
-	u32 i = kdebug_init_val;
+	u32 i = KDEBUG_INIT_VAL;
 	if ((l_start_bit + total_bits - 1) <= end_bit){
 		if (0 == find_first_free(&first_free_bit, l_start_bit)){
 			if (first_free_bit == l_start_bit){
@@ -327,7 +344,7 @@ void* bm_malloc (u32 size)
 	//size = 17000;
  	u32 rsize = ROUND_TO_PAGE_SIZE(size);
 	u32 bits = rsize/PAGE_SIZE;
-	u32 start_bit = kdebug_init_val;
+	u32 start_bit = KDEBUG_INIT_VAL;
 
 	// first check if we have space left in our account area
 	bm_account *s = NULL;
