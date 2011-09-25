@@ -76,7 +76,7 @@ multiboot_entry:
 	je	1f
 	// oh no...
 	pushl 	$multiboot_magic_mismatch_msg
-	call	EXT_C(printf)
+	call	EXT_C(printk)
 	jmp	exit_ganoid
 
 1:
@@ -92,7 +92,7 @@ multiboot_entry:
 	// now enter the C main function
 	call EXT_C(kernel_main)
 	pushl $halt_message
-	call EXT_C(printf)
+	call EXT_C(printk)
 	jmp exit_ganoid
 
 exit_ganoid:	

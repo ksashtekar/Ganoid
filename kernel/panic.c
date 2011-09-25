@@ -13,7 +13,7 @@
 
 void panic()
 {
-	printk("PANIC");
+	printk("PANIC\n");
 	ENTER_CRITICAL_SECTION;
 	while(1);
 }

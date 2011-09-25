@@ -6,7 +6,7 @@
 #include <tests/t_sprintf.h>
 
 
-testfuncptr TestFunctions[MAX_TESTS] = {Test_sprintf, Test_bootmem, NULL};
+testfuncptr TestFunctions[MAX_TESTS] = {Test_sprintf, NULL};
 
 
 int ExecuteTests (int *TestIdArray)

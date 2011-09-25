@@ -15,10 +15,10 @@ VPATH         := arch/$(ARCH)/drivers:arch/$(ARCH)/boot: \
 SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c  \
 	         sysinfo.c kdebug.c bootmem.c constants.c   \
-                 cpu.c kbd-handler.c sched.c process.c idle.c 	\
-		pgfault.c
+	         cpu.c kbd-handler.c sched.c process.c idle.c 	\
+		 pgfault.c free-pages.c
 
-TESTSRCS      := tests.c t_bootmem.c t_sprintf.c 
+TESTSRCS      := tests.c t_sprintf.c 
 
 ASMSRCS       := boot.S kernel.S vectors.S kbd.S cpu-id.S utils.S
 
@@ -67,7 +67,7 @@ $(BIN): $(OBJS) $(ASMOBJS) $(TESTOBJS) $(DEPENDS) Makefile
 	rm -f $@.$$$$
 
 
-include $(DEPENDS)
+-include $(DEPENDS)
 
 clean:
 	@echo Cleaning ... Please wait

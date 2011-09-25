@@ -267,8 +267,8 @@ char* columnlize_string (const char *istr, char *ostr, int screen_width,
 
 	for (ip = 0, op = 0; *istr; ){
 		if (left_margin) {
-			for (int i = 0; i < tabs; i++) sprintk(ostr++, "\t");
-			for (int i = 0; i < leftfillspace; i++) sprintk(ostr++, " ");
+			for (int i = 0; i < tabs; i++) sprintf(ostr++, "\t");
+			for (int i = 0; i < leftfillspace; i++) sprintf(ostr++, " ");
 		}
 
 		for (r = 0; (r < single_line_str_len) && (*istr) && (*istr != '\n'); r++)

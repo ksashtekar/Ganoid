@@ -16,7 +16,6 @@ typedef unsigned int size_t;
 
 
 typedef unsigned char uchar;
-typedef unsigned int u32;
 typedef int bool;
 typedef int pid_t;
 

@@ -3,8 +3,7 @@
  *
  *  Physical page allocator.
  *
- *  Copyright (C) 2011-2022 Kaustubh Ashtekar
- *
+ *  Copyright (C) 2011 Kaustubh Ashtekar
  */
 
 

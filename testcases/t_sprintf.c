@@ -5,11 +5,11 @@
 #include <clib.h>
 #include <string.h>
 
-#include <tests/t_sprintk.h>
+#include <tests/t_sprintf.h>
 
 
 
-int Test_sprintk (int param1, int param2, void *ptr)
+int Test_sprintf (int param1, int param2, void *ptr)
 {
   int i = -12345;
 
