@@ -18,7 +18,6 @@
 #include <task.h>
 #include <sched.h>
 #include <kdebug.h>
-#include <utils.h>
 
 
 extern task_struct_t idle_task_s;

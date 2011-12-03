@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <ganoid/types.h>
+#include <processor.h>
 
 enum desc_privilege_level
 	{

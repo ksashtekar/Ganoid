@@ -1,5 +1,5 @@
 /*
- *  arch/i386/kernel/utils.h
+ *  arch/i386/kernel/utils.S
  *   
  *  Utility functions.
  *

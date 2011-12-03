@@ -19,7 +19,6 @@
 #include <process.h>
 #include <kbd-handler.h>
 #include <kdebug.h>
-#include <utils.h>
 #include <kernel/idle.h>
 
 int kernel_main (void);

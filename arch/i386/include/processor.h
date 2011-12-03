@@ -1,13 +1,5 @@
-/*
- *  arch/i386/kernel/utils.h
- *   
- *  Header file for the utils.S function. 
- *
- *  Copyright (C) 2010-2020  Kaustubh Ashtekar
- *
- *  2010-02-12  Initial version
- */
-
+#ifndef __PROCESSOR_H__
+#define __PROCESSOR_H__
 
 // enable the interrupts of the processor
 void enable_interrupts (void);
@@ -19,3 +11,4 @@ unsigned int disable_interrupts (void);
 int restore_interrupts (unsigned int eflags);
 
 
+#endif /* __PROCESSOR_H__ */
