@@ -46,9 +46,9 @@ static int bootmem_init_complete = 0;
  * the system RAM information along with this free/busy array.
  */
 
-//#define NO_OF_PAGE_FRAMES 1048576
+//#define NUM_FRAMES 1048576
 
-static u32 free_bitmap[NO_OF_PAGE_FRAMES/32] = {0};
+static u32 free_bitmap[NUM_FRAMES/32] = {0};
 
 static void bm_setbit (u32 bitno, int init_area);
 static void bm_clearbit (u32 bitno, int init_area);
@@ -81,7 +81,7 @@ static u32 bm_heap_end;
  */
 int init_bootmem_allocator (void)
 {
-    const ram_map *s = NULL;
+    const ram_map_t *s = NULL;
     u32 rammap_node_count = kdebug_init_val;
     int r = 0;
     u32 *start_addr = NULL;

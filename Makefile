@@ -14,13 +14,13 @@ VPATH         := arch/$(ARCH)/drivers:arch/$(ARCH)/boot: \
 
 SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c  \
-	         sysinfo.c kdebug.c bootmem.c constants.c   \
+	         sysinfo.c kdebug.c page.c constants.c   \
 	         cpu.c kbd-handler.c sched.c process.c idle.c 	\
-		 pgfault.c free-pages.c
+		 pgfault.c utils.c
 
 TESTSRCS      := tests.c t_sprintf.c 
 
-ASMSRCS       := boot.S kernel.S vectors.S kbd.S cpu-id.S utils.S
+ASMSRCS       := boot.S kernel.S vectors.S kbd.S cpu-id.S asm-utils.S
 
 OBJS          := $(patsubst %.c,%.o,$(SRCS))
 ASMOBJS       := $(patsubst %.S,%.o,$(ASMSRCS))

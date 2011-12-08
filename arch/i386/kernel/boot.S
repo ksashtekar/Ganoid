@@ -16,6 +16,7 @@
 
 	
 
+#define ASM_FILE
 #define ASM 1
 	
 #include <multiboot.h>

@@ -3,3 +3,5 @@ Following is a list of items to be done:
 1. Complete the panic handler.
    - Show stack. Also show the corresponding symbols strings.
    - Show all the registers of the processor.
+
+2. Add Kconfig build system

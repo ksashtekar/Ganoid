@@ -1,12 +1,8 @@
-#ifndef SYSINFO_H_
-#define SYSINFO_H_
+#ifndef __SYSINFO_H__
+#define __SYSINFO_H__
 
 #include <ganoid/types.h>
-
-
-#define MULTIBOOT_RAM 1
-
-
+#include <multiboot.h>
 
 
 /*
@@ -50,67 +46,6 @@ The format of the Multiboot information structure (as defined so far) follows:
 */
 
 
-struct multiboot_a_out_info
-{
-	u32 tabsize;
-	u32 strsize;
-	u32 addr;
-	u32 reserved;
-};
-
-struct multiboot_elf_info
-{
-	u32 num;
-	u32 size;
-	u32 addr;
-	u32 shndx;
-};
-
-union syms 
-{
-	struct multiboot_a_out_info a_out_info;
-	struct multiboot_elf_info elf_info;
-};
-
-struct multiboot_info 
-{
-	u32 flags;
-        u32 mem_lower; //    (present if flags[0] is set)
-        u32 mem_upper; //    (present if flags[0] is set)
-        u32 boot_device; //  (present if flags[1] is set)
-        u32 cmdline; //      (present if flags[2] is set)
-        u32 mods_count; //   (present if flags[3] is set)
-        u32 mods_addr;  //   (present if flags[3] is set)
-	union syms syms; // (present if flags[4] or flags[5] is set)
-        u32 mmap_length; //  (present if flags[6] is set)
-        u32 mmap_addr;   //   (present if flags[6] is set)
-        u32 drives_length; // (present if flags[7] is set)
-        u32 drives_addr; //   (present if flags[7] is set)
-        u32 config_table; //  (present if flags[8] is set)
-        u32 boot_loader_name; // (present if flags[9] is set)
-        u32 apm_table; //    (present if flags[10] is set)
-        u32 vbe_control_info; // (present if flags[11] is set)
-        u32 vbe_mode_info; 
-        u16 vbe_mode;
-        u16 vbe_interface_seg;
-        u16 vbe_interface_off;
-        u16 vbe_interface_len;
-} __attribute__((packed));
-
-
-// this is the format of a single node corresponding to a
-// homogeneous region of address space. this is the format
-// it which it is given to us by the multiboot compliant
-// bootloader. 
-struct bios_addr_map
-{
-	u32 node_size; // in bytes
-	u32 base_addr_low;
-	u32 base_addr_high;
-	u32 length_low;
-	u32 length_high;
-	u32 type;
-} __attribute__((packed));
 
 struct bios_drive_info
 {
@@ -124,27 +59,22 @@ struct bios_drive_info
 } __attribute__((packed));
 
 
-
-enum addr_type
-	{
-		RAM
-	};
-
-
 typedef struct {
-	u32 *start_addr;
-	u32 *end_addr;
-}ram_map;
-
-void read_multiboot_information (u32 *multiboot_info_ptr);
-void display_boot_progress (const char *message, bool result);
-char* columnlize_string (const char *istr, char *ostr, int screen_width, 
-			 int left_margin, int right_margin, int fillbyte);
+    unsigned saddr; /* start address */
+    unsigned len;
+}ram_map_t;
 
 
-const char* get_bios_addr_buffer (u32 *size);
-const ram_map* get_rammap_ptr (u32 *rammap_nodes);
-#endif // SYSINFO_H_
+void read_multiboot_information(u32 *multiboot_info_ptr);
+void display_boot_progress(const char *message, bool result);
+char* columnlize_string(const char *istr, char *ostr, 
+			int screen_width, int left_margin, 
+			int right_margin, int fillbyte);
+
+
+const struct multiboot_mmap_entry *get_bios_addr_buffer(unsigned *node_cnt);
+const ram_map_t* get_rammap_ptr (u32 *rammap_nodes);
+#endif // __SYSINFO_H__
 
 
 
