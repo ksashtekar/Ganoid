@@ -1,4 +1,3 @@
-
 /*
  * mm/page.c
  *
@@ -21,7 +20,6 @@
 #include <string.h>
 #include <utils.h>
 
-
 /*
  * In a 32 bit system there are 1048576 pages in the address space.
  * Not all of them are usable as RAM as some of them are mapped 
@@ -38,6 +36,13 @@
  * function call. So, we do not have a function which can free many
  * pages at once. The user has to free each page indivisually.
  */
+
+#define DEBUG_PAGE_ALLOC
+#ifdef DEBUG_PAGE_ALLOC
+#define MDEBUG printk
+#else /* ! DEBUG_PAGE_ALLOC */
+#define MDEBUG(...)
+#endif /* DEBUG_PAGE_ALLOC */
 
 
 #define GET_PAGENO(a) (unsigned)((unsigned)a)/PAGE_SIZE
@@ -100,7 +105,7 @@ static void fp_setbit_range(unsigned start_bit, unsigned end_bit)
  */
 static void fp_clearbit_range(unsigned start_bit, unsigned end_bit)
 {
-    printk("%s: %d:%x %d:%x\n", __FUNCTION__,
+    MDEBUG("%s: %d:%x %d:%x\n", __FUNCTION__,
 	   start_bit, PAGENO_TO_ADDR(start_bit), end_bit, PAGENO_TO_ADDR(end_bit));
     unsigned bit = start_bit;
     for(;bit <= end_bit; bit++) 
@@ -147,7 +152,6 @@ static unsigned find_first_free(unsigned *bit, unsigned from)
  * @return On success 0 is returned and \a start_bit is set
  * to appropriate value. On error 1 is returned.
  */
-  
 static int find_free_bits_range(unsigned count, 
 				     unsigned *start_bit)
 {
@@ -184,29 +188,29 @@ static int find_free_bits_range(unsigned count,
 	return 1;
 }
 
-
+static void dump_free_info(void) __attribute__((unused));
 static void dump_free_info(void)
 {
     unsigned bit;
     
-    printk("Free/Alloc map\n\n");
-    int start = 0;
-    unsigned init_value = fp_getbit(start);
+    MDEBUG("Free/Alloc map\n\n");
+    unsigned start = 0;
+    bool init_value = fp_getbit(start);
     for(bit = 1 ; bit <= LAST_BIT_NO; bit++) {
 	if((fp_getbit(bit) != init_value) || (bit == LAST_BIT_NO)) {
-	    printk("0x%x to 0x%x :: ",
-		   PAGENO_TO_ADDR(start), PAGENO_TO_ADDR(bit));
+	    MDEBUG("0x%x to 0x%x :: ",
+		   PAGENO_TO_ADDR(start), PAGENO_TO_ADDR(bit)-1);
 	    if(init_value)
-		printk("Allocated. Size: ");
+		MDEBUG("Allocated. Size: ");
 	    else
-		printk("Free. Size: ");
+		MDEBUG("Free. Size: ");
 	    print_human_readable_size(PAGENO_TO_ADDR(bit) -  
 				      PAGENO_TO_ADDR(start));	    
 	    start = bit;
 	    init_value = fp_getbit(start);
 	}
     }
-    printk("Done\n");
+    MDEBUG("Done\n");
     while(1){}
 }
 
@@ -217,11 +221,11 @@ static void dump_free_info(void)
  * This takes RAM information from the multiboot header 
  * and then sets up some data structures to manage this RAM.
  */
-init_page_allocator()
+void init_page_allocator()
 {
     /* set all bits to busy .. we will clear bits which actually
        point to usable RAM */
-    for(int x = 0; x < UINT_CNT; x++)
+    for(unsigned x = 0; x < UINT_CNT; x++)
 	free_bm[x] = (unsigned)~0;
 
     unsigned node_cnt;
@@ -232,7 +236,7 @@ init_page_allocator()
 	       i, s[i].saddr,  s[i].saddr + s[i].len - 1);
 	print_human_readable_size(s[i].len);
     }
-
+    
     printk("Area occupied by Ganoid:\n");
     printk("Start: 0x%8x\n", GANOID_AREA_START);
     printk("End  : 0x%8x\n", GANOID_AREA_END);
@@ -243,7 +247,7 @@ init_page_allocator()
 	if(s[i].saddr <= GANOID_AREA_START &&
 	   GANOID_AREA_END < next_block_addr) {
 	    /* kernel is inside current RAM area */
-	    printk("This area has ganoid\n");
+	    MDEBUG("This area has ganoid\n");
 
 	    /* free pages upto kernel start */
 	    if(s[i].saddr != GANOID_AREA_START)
@@ -251,22 +255,20 @@ init_page_allocator()
 				  GET_PAGENO(GANOID_AREA_START - 1));
 	    
 	    if(next_block_addr != GANOID_AREA_END) {
-		printk("SEQ 0: %x %x\n",GANOID_AREA_END + 
+		MDEBUG("SEQ 0: %x %x\n",GANOID_AREA_END + 
 					     PAGE_SIZE ,next_block_addr - 1);
 		fp_clearbit_range(GET_PAGENO(GANOID_AREA_END + 
 					     PAGE_SIZE),
 				  GET_PAGENO(next_block_addr - 1));
 	    }
 	} else {
-	    printk("Full free range: %x to %x\n\r",
+	    MDEBUG("\nFull free range: %x to %x\n",
 		   s[i].saddr, next_block_addr - 1);
 	    fp_clearbit_range(GET_PAGENO(s[i].saddr),
 			      GET_PAGENO(next_block_addr - 1));
 	}
     }
-
-    dump_free_info();    
-    while(1);
+    //    dump_free_info();    
 }
 
 

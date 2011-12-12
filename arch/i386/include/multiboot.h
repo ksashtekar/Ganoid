@@ -19,6 +19,15 @@
  *  IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef HAVE_ASM_USCORE
+#define EXT_C(sym) _ ## sym
+#else
+#define EXT_C(sym) sym
+#endif
+#define STACK_SIZE 0x4000
+
+//#define GRUB_V_0_99
+
 #ifndef MULTIBOOT_HEADER
 #define MULTIBOOT_HEADER 1
 
@@ -68,10 +77,16 @@
 /* is there a symbol table loaded? */
 #define MULTIBOOT_INFO_AOUT_SYMS		0x00000010
 /* is there an ELF section header table? */
+#ifdef GRUB_V_0_99
 #define MULTIBOOT_INFO_ELF_SHDR			0X00000020
+#endif /* GRUB_V_0_99 */
 
 /* is there a full memory map? */
+#ifdef GRUB_V_0_99
 #define MULTIBOOT_INFO_MEM_MAP			0x00000040
+#else 
+#define MULTIBOOT_INFO_MEM_MAP			0x00000020
+#endif /* GRUB_V_0_99 */
 
 /* Is there drive info?  */
 #define MULTIBOOT_INFO_DRIVE_INFO		0x00000080
@@ -273,5 +288,7 @@ struct multiboot_apm_info
 };
 
 #endif /* ! ASM_FILE */
+
+#define MULTIBOOT_HEADER_FLAGS (MULTIBOOT_MEMORY_INFO)
 
 #endif /* ! MULTIBOOT_HEADER */

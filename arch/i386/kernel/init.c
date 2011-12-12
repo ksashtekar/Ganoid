@@ -41,7 +41,6 @@ int kernel_main ()
 
     read_multiboot_information ((u32*)multiboot_struct_ptr);
     display_boot_progress ("Read multiboot information", 0);
-    //r = init_free_page_data();
     init_page_allocator();
     display_boot_progress ("Initialize page allocator", r);
     
@@ -74,7 +73,8 @@ int kernel_main ()
 
     //    asm volatile ("sti");
 
-    init_schedular();
+    r = init_schedular();
+    display_boot_progress ("Schedular init", r);
     asm volatile ("sti");	
     do_idle();
 

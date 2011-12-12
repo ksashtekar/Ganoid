@@ -95,12 +95,8 @@ static void parse_mboot_information(void)
 	for(i = 0; i < node_cnt; i++) {
 	    //printk("******* Node %d ********\n", i);
 	    //printk("Node size    : %d\n", mboot_mmap[i].node_size);
-	    printk("0x%8x", (u32)(mboot_mmap[i].addr & mask32));
-	    print_human_readable_size((unsigned)
-				      (mboot_mmap[i].len & mask32));
-
 	    if(mboot_mmap[i].type == MULTIBOOT_MEMORY_AVAILABLE){
-		printk(", RAM\n");
+		printk("RAM     : ");
 		ram_map[ram_nodes_cnt].saddr = 
 		    (u32)(mboot_mmap[i].addr & mask32);
 		ram_map[ram_nodes_cnt].len = 
@@ -108,8 +104,10 @@ static void parse_mboot_information(void)
 		ram_nodes_cnt++;
 	    }
 	    else
-		printk(", Reserved\n");
-	    
+		printk("Reserved: ");
+	    printk("0x%8x ", (unsigned)((unsigned)mboot_mmap[i].addr & mask32));
+	    print_human_readable_size((unsigned)
+				      ((unsigned)mboot_mmap[i].len & mask32));
 	}
     }
     
@@ -144,7 +142,6 @@ static void parse_mboot_information(void)
     printk("APM information not parsed\n");
 
     printk("VBE information not parsed\n");
-
 }
 
 
