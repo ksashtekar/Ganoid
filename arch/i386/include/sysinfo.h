@@ -4,7 +4,6 @@
 #include <ganoid/types.h>
 #include <multiboot.h>
 
-
 /*
 The format of the Multiboot information structure (as defined so far) follows:
 
@@ -45,10 +44,7 @@ The format of the Multiboot information structure (as defined so far) follows:
              +-------------------+
 */
 
-
-
-struct bios_drive_info
-{
+struct bios_drive_info {
 	u32 size;
 	u8 drive_no;
 	u8 drive_mode;
@@ -56,26 +52,19 @@ struct bios_drive_info
 	u8 drive_heads;
 	u8 drive_sectors;
 	u16 *start_port_array;
-} __attribute__((packed));
-
+} __attribute__ ((packed));
 
 typedef struct {
-    unsigned saddr; /* start address */
-    unsigned len;
-}ram_map_t;
+	unsigned saddr;		/* start address */
+	unsigned len;
+} ram_map_t;
 
-
-void read_multiboot_information(u32 *multiboot_info_ptr);
+void read_multiboot_information(u32 * multiboot_info_ptr);
 void display_boot_progress(const char *message, bool result);
-char* columnlize_string(const char *istr, char *ostr, 
-			int screen_width, int left_margin, 
-			int right_margin, int fillbyte);
-
+char *columnlize_string(const char *istr, char *ostr,
+			int screen_width, int left_margin,
+			int right_margin, char fillbyte);
 
 const struct multiboot_mmap_entry *get_bios_addr_buffer(unsigned *node_cnt);
-const ram_map_t* get_rammap_ptr (u32 *rammap_nodes);
+const ram_map_t *get_rammap_ptr(int *rammap_nodes);
 #endif // __SYSINFO_H__
-
-
-
-
