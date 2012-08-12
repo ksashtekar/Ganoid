@@ -26,7 +26,7 @@ static ram_map_t ram_map[ADDR_MAP_NODE_CNT];
 
 // ~temp
 extern int debug_printk;
-static int ram_nodes_cnt;
+static unsigned ram_nodes_cnt;
 
 static void parse_mboot_information(void)
 {
@@ -106,11 +106,11 @@ static void parse_mboot_information(void)
 			} else
 				printk("Reserved: ");
 			printk("0x%8x ",
-			       (unsigned)((unsigned)mboot_mmap[i].
-					  addr & mask32));
+			       (unsigned)((unsigned)mboot_mmap[i].addr &
+					  mask32));
 			print_human_readable_size((unsigned)
-						  ((unsigned)mboot_mmap[i].
-						   len & mask32));
+						  ((unsigned)mboot_mmap[i].len &
+						   mask32));
 		}
 	}
 
@@ -262,7 +262,7 @@ char *columnlize_string(const char *istr, char *ostr, int screen_width,
 	return obuf;
 }
 
-const ram_map_t *get_rammap_ptr(int *rammap_nodes)
+const ram_map_t *get_rammap_ptr(unsigned *rammap_nodes)
 {
 	*rammap_nodes = ram_nodes_cnt;
 	return ram_map;
