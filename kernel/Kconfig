@@ -1,0 +1,9 @@
+
+
+config MAX_CREATE_THREADS
+       int
+       prompt "Max threads"
+       default 10
+       help
+	This is the maximum threads that can be created in the lifetime of
+        the system.

@@ -1,2 +1,1 @@
-menu "Ganoid Kernel configuration"
-endmenu
+source kernel/Kconfig
