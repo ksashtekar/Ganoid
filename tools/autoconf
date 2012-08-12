@@ -1,0 +1,66 @@
+#!/usr/bin/perl -w
+
+# This script is to generate a header file from the .config file created by
+# the kconfig build system.
+
+
+$CONFIG_FILE = $ARGV[0];
+$AUTOCONF_FILE = $ARGV[1];
+
+
+&check_preconditions;
+
+
+open (CFG_FILE_HANDLE, $CONFIG_FILE) or die $!;
+open (AUTOCFG_FILE_HANDLE, ">", $AUTOCONF_FILE) or die $!;
+
+while (<CFG_FILE_HANDLE>) {
+    # Check if given line is a comment ...
+    $comment_found = grep (/^#/, $_);
+    if ("$comment_found" eq "1") {
+	$_ =~ s/^#/\/\//;
+	print AUTOCFG_FILE_HANDLE $_;
+    }
+    else {
+	$assignment_found = grep (/=/, $_);
+	if ("$assignment_found" eq "1") {
+	    $offset = index ($_, "=");
+	    $key = substr ($_, 0, $offset);
+	    $value = substr ($_, $offset+1);
+	    $yes_found = grep (/^y/, $value);
+
+	    if ("$yes_found" eq "1") {
+		$value = "1\n";
+	    }
+
+	    print AUTOCFG_FILE_HANDLE "#define ";
+	    print AUTOCFG_FILE_HANDLE $key;
+	    print AUTOCFG_FILE_HANDLE " ";
+	    print AUTOCFG_FILE_HANDLE $value;
+	}
+    }
+}
+
+
+close CFG_FILE_HANDLE;
+close AUTOCFG_FILE_HANDLE;
+exit 0;
+
+
+sub check_preconditions {
+
+    if ( $CONFIG_FILE eq "" ) {
+	print "Variable CONFIG_FILE is not defined ... ";
+	exit 1;
+    }
+
+    if ( $AUTOCONF_FILE eq "" ) {
+	print "Variable AUTOCONF_FILE is not defined ... ";
+	exit 1;
+    }
+
+    if (! -e $CONFIG_FILE) {
+	print "$CONFIG_FILE is not present ..... \n";
+	exit 1;
+    }
+}
