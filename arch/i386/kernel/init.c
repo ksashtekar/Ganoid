@@ -22,77 +22,70 @@
 #include <kernel/idle.h>
 #include <mm/page.h>
 
-int kernel_main (void);
-
+int kernel_main(void);
 
 extern int multiboot_struct_ptr;
 extern task_struct_t *current_task;
 extern int schedule_request;
 
-  
-
-int kernel_main ()
+int kernel_main()
 {
-    int r = 0;
+	int r = 0;
 
-    delay (0);
+	delay(0);
 
-    vga_init ();
+	vga_init();
 
-    read_multiboot_information ((u32*)multiboot_struct_ptr);
-    display_boot_progress ("Read multiboot information", 0);
-    init_page_allocator();
-    display_boot_progress ("Initialize page allocator", r);
-    
-    init_isr_dispatcher ();
-    init_Interrupt_Descriptor_Table ();
-    r = init_APIC ();
-    display_boot_progress ("Initialize interrupt subsystem", r);
+	read_multiboot_information((u32 *) multiboot_struct_ptr);
+	display_boot_progress("Read multiboot information", 0);
+	init_page_allocator();
+	display_boot_progress("Initialize page allocator", (r != 0));
 
-    r = init_kbd_handler ();
-    display_boot_progress ("Initialize keyboard", r);
+	init_isr_dispatcher();
+	init_Interrupt_Descriptor_Table();
+	r = init_APIC();
+	display_boot_progress("Initialize interrupt subsystem", (r != 0));
 
-    init_timer (HZ);
-    add_isr_handler (TIMER_INTERRUPT, timer_isr);
+	r = init_kbd_handler();
+	display_boot_progress("Initialize keyboard", (r != 0));
 
-    //asm volatile ("sti");
+	init_timer(HZ);
+	add_isr_handler(TIMER_INTERRUPT, timer_isr);
 
-    /*
-      init_paging ();
-      printk ("i am now working in paging mode\n");
-      int i = 10;
-      p = (unsigned*)&i;
-      p = (unsigned*)0x10000000;
-      (*p) = 0;
-      i++;
-	
-      // asm volatile ("int $");
+	/* asm volatile ("sti"); */
 
-      asm volatile("mov $0xBADBADBA, %edx");
-    */
+	/*
+	   init_paging ();
+	   printk ("i am now working in paging mode\n");
+	   int i = 10;
+	   p = (unsigned*)&i;
+	   p = (unsigned*)0x10000000;
+	   (*p) = 0;
+	   i++;
+	*/
 
-    //    asm volatile ("sti");
+	/* asm volatile ("int $"); */
 
-    r = init_schedular();
-    display_boot_progress ("Schedular init", r);
-    asm volatile ("sti");	
-    do_idle();
+	/* asm volatile("mov $0xBADBADBA, %edx"); */
+
+	/* asm volatile ("sti"); */
+	r = init_schedular();
+	display_boot_progress("Schedular init", (r != 0));
+	asm volatile ("sti");
+	do_idle();
 
 #if 0
-    unsigned char val;
-    asm volatile ("xor %ebx, %ebx");
-    asm volatile ("add $100, %ebx");
-    asm volatile ("add $0, %0": "=a"(val): "a"(val));
-#endif // 0
+	unsigned char val;
+	asm volatile ("xor %ebx, %ebx");
+	asm volatile ("add $100, %ebx");
+	asm volatile ("add $0, %0" : "=a" (val) : "a"(val));
+#endif /* 0 */
 
-    return 0;
+	return 0;
 }
 
-
-
-
-void irq0_handler (void);
-void irq0_handler (void)
+void irq0_handler(void);
+void irq0_handler(void)
 {
-    printk ("into irq0 handler");
+	printk("into irq0 handler");
 }

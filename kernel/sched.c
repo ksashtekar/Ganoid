@@ -48,7 +48,6 @@ static void add_idle_task_to_run_queue(task_struct_t *task)
 static task_struct_t* get_next_task (task_struct_t *cur_task)
 {
     task_struct_t *next = cur_task->next;
-    //printk("Return: %s\n", next->task_name);
     if (!next) 
 	return head;
     else 
