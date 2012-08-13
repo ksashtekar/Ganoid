@@ -28,22 +28,16 @@
 
 #define DEFAULT_STACK_SIZE PAGE_SIZE
 
-typedef struct
-{
-    char task_name[64];
-    unsigned char stack[DEFAULT_STACK_SIZE];
+struct task_struct {
+	char task_name[64];
+	unsigned char stack[DEFAULT_STACK_SIZE];
 
-    unsigned esp;
-    unsigned eip;
-    unsigned isr_ebp; 
+	unsigned esp;
+	unsigned eip;
+	unsigned isr_ebp;
 
-    struct task_struct *prev;
-    struct task_struct *next;
-}task_struct_t;
-
-
-
-
-
+	struct task_struct *prev;
+	struct task_struct *next;
+};
 
 #endif

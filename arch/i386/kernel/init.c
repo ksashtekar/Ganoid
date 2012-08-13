@@ -25,7 +25,7 @@
 int kernel_main(void);
 
 extern int multiboot_struct_ptr;
-extern task_struct_t *current_task;
+extern struct task_struct *current_task;
 extern int schedule_request;
 
 int kernel_main()
@@ -62,7 +62,7 @@ int kernel_main()
 	   p = (unsigned*)0x10000000;
 	   (*p) = 0;
 	   i++;
-	*/
+	 */
 
 	/* asm volatile ("int $"); */
 

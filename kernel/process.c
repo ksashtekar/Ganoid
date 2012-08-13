@@ -19,13 +19,12 @@
 #include <sched.h>
 #include <kdebug.h>
 
-
 /**
  * For now only have a static array of empty structures of task_struct. will
  * use dynamic allocation in the future
  */
-static task_struct_t task_struct_array[CONFIG_MAX_CREATE_THREADS]
-__attribute__((aligned(4)));
+static struct task_struct task_struct_array[CONFIG_MAX_CREATE_THREADS]
+__attribute__ ((aligned(4)));
 static int task_struct_array_index;
 
 static void hello()
@@ -37,7 +36,6 @@ static void hello()
 	}
 }
 
-
 /**
  * In the current implementation there is a static array of task structures
  * and whenever new thread is created, one element from this array is
@@ -47,7 +45,7 @@ static void hello()
  * Ofcourse, this strategy is a temporary one for the want of good dynamic
  * allocation mechanism.
  */
-static task_struct_t *get_free_task_struct()
+static struct task_struct *get_free_task_struct()
 {
 	int allocated_index = 0;
 	ENTER_CRITICAL_SECTION;
@@ -62,10 +60,10 @@ static task_struct_t *get_free_task_struct()
  * Create a new kernel thread. 
  * fn: Function which will be called after the new thread is created.
  */
-int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
+int kernel_thread(int (*fn) (void *), void *arg, unsigned long flags)
 {
 	printk("Start kernel thread creation\n");
-	task_struct_t *t = get_free_task_struct();
+	struct task_struct *t = get_free_task_struct();
 	printk("Task struct allocated at: 0x%x\n", t);
 	t->task_name[0] = 'X';
 	t->task_name[1] = '\0';
@@ -83,15 +81,14 @@ int kernel_thread(int (*fn)(void *), void * arg, unsigned long flags)
 	const char *func_sptr = sptr;
 	/* sptr--; */
 	/* *sptr =  */
-	isr_registers_t *i = (sptr - (sizeof(isr_registers_t)/4));
-
+	isr_registers_t *i = (sptr - (sizeof(isr_registers_t) / 4));
 
 	/* FIXME: This may be required for interrupt from user space
 	 * i->ss = 0x10;
 	 * i->useresp = func_sptr; */
 	i->eflags = 0x00200260;
 	/* i->eflags = 0x00000400; FIXME: proper value needed */
-	i->cs = 0x08; /* code segment */
+	i->cs = 0x08;		/* code segment */
 	i->eip = fn;
 
 	i->int_no = 0;

@@ -10,6 +10,9 @@
  *               names>
  */
 
+#define ASM_FILE
+#define ASM 1
+
 #include <cpu.h>	
 
 	.code32

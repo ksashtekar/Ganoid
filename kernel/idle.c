@@ -7,24 +7,21 @@
  *
  */
 
-
 #include <kernel/idle.h>
 #include <task.h>
 
-
-task_struct_t idle_task_s = {
-    .task_name = "idle_task",
-    .esp = 0xDEADBEEF,
-    .eip = 0xDEADBEEF
+struct task_struct idle_task_s = {
+	.task_name = "idle_task",
+	.esp = 0xDEADBEEF,
+	.eip = 0xDEADBEEF
 };
-
 
 void do_idle()
 {
-    //schedule_request = 0x10;
-    while (1) {
-	//ENTER_CRITICAL_SECTION;
-	printk("IDLE TASK\n"); 
-	//EXIT_CRITICAL_SECTION;
-    }
+	/*schedule_request = 0x10; */
+	while (1) {
+		/*ENTER_CRITICAL_SECTION; */
+		printk("IDLE TASK\n");
+		/*EXIT_CRITICAL_SECTION; */
+	}
 }
