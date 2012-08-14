@@ -22,7 +22,7 @@
 #include <kernel/idle.h>
 #include <mm/page.h>
 
-int kernel_main(void);
+int kernel_main(void) __attribute__ ((noreturn));
 
 extern int multiboot_struct_ptr;
 extern struct task_struct *current_task;
@@ -80,8 +80,6 @@ int kernel_main()
 	asm volatile ("add $100, %ebx");
 	asm volatile ("add $0, %0" : "=a" (val) : "a"(val));
 #endif /* 0 */
-
-	return 0;
 }
 
 void irq0_handler(void);

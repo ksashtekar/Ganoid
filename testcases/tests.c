@@ -5,17 +5,15 @@
 #include <tests.h>
 #include <tests/t_sprintf.h>
 
+testfuncptr TestFunctions[MAX_TESTS] = { Test_sprintf, NULL };
 
-testfuncptr TestFunctions[MAX_TESTS] = {Test_sprintf, NULL};
-
-
-int ExecuteTests (int *TestIdArray)
+int ExecuteTests(int *TestIdArray __attribute__ ((unused)))
 {
-  int i;
-  //  TestFunctions[0] = Test_sprintf;
+	int i;
+	/*  TestFunctions[0] = Test_sprintf; */
 
-  for (i = 0;TestFunctions[i];i++)
-    (TestFunctions[i])(0, 0, NULL);
+	for (i = 0; TestFunctions[i]; i++)
+		(TestFunctions[i]) (0, 0, NULL);
 
-  return 0;
+	return 0;
 }

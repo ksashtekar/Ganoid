@@ -9,6 +9,7 @@
 
 #include <kernel/idle.h>
 #include <task.h>
+#include <kernel.h>
 
 struct task_struct idle_task_s = {
 	.task_name = "idle_task",
