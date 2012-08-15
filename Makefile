@@ -55,13 +55,18 @@ DEPENDS	      += $(patsubst %.S,.%.d,$(ASMSRCS))
 DEPENDS       += $(patsubst %.c,.%.d,$(TESTSRCS))
 
 BIN           := ganoid-$(VERSION)
-CC            := gcc -g -c -std=gnu99 
 CPPFLAGS      := -Wa,-march=i686 -mtune=generic -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0 -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations  -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Waddress -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var -Wpointer-sign \
 	-include include/autoconf.h
 
 #AS	      := as	
 #ASFLAGS	      := -march=i686  	
 
+
+ifneq ($(VERBOSE), 1)
+CC            := @gcc -g -c -std=gnu99
+else
+CC            := gcc -g -c -std=gnu99
+endif # VERBOSE
 
 #.DEFAULT_GOAL = $(BIN)
 
@@ -70,16 +75,18 @@ $(BIN): $(AUTOCONF_FILE) $(OBJS) $(ASMOBJS) $(TESTOBJS) $(DEPENDS) Makefile
 	@date 
 	@printf "\n"
 	@cp $(LINKER_SCRIPT) bin
-	$(MAKE) -C bin $(BIN)
+	@$(MAKE) -C bin $(BIN)
 
 $(AUTOCONF_FILE): $(CONFIG_FILE)
 	@tools/autoconf $< $@
 
 
 %.o: %.c
+	@echo "CC  $(shell basename $<)"
 	$(CC) $(CPPFLAGS) -o $(OUTDIR)/$@ $<
 
 %.o: %.S
+	@echo ASM $(shell basename $<)
 	$(CC) $(CPPFLAGS) -o $(OUTDIR)/$@ $<
 
 .%.d: %.c
@@ -89,7 +96,7 @@ $(AUTOCONF_FILE): $(CONFIG_FILE)
 	rm -f $@.$$$$
 
 .%.d: %.S
-	@set -e; rm -f $@; \
+	set -e; rm -f $@; \
 	$(CC) -M $(CPPFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
