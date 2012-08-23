@@ -65,7 +65,7 @@ CPPFLAGS      := -Wa,-march=i686 -mtune=generic -Wall -Iinclude -Iarch/$(ARCH)/i
 ifneq ($(VERBOSE), 1)
 .SILENT:
 
-CC            := @gcc -g -c -std=gnu99
+CC            := gcc -g -c -std=gnu99
 else
 CC            := gcc -g -c -std=gnu99
 endif # VERBOSE
