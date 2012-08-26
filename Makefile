@@ -55,8 +55,22 @@ DEPENDS	      += $(patsubst %.S,.%.d,$(ASMSRCS))
 DEPENDS       += $(patsubst %.c,.%.d,$(TESTSRCS))
 
 BIN           := ganoid-$(VERSION)
-CPPFLAGS      := -Wa,-march=i686 -mtune=generic -Wall -Iinclude -Iarch/$(ARCH)/include -fno-stack-protector -ffreestanding -O0 -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations  -Wpointer-arith -Wbad-function-cast -Wcast-qual -Wwrite-strings -Wconversion -Wsign-compare -Waddress -Waggregate-return -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wmissing-field-initializers -Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var -Wpointer-sign \
-	-include include/autoconf.h
+
+WARN_FLAGS := -Wall -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations \
+	 -Wpointer-arith -Wbad-function-cast -Wcast-qual \
+	-Wwrite-strings -Wconversion -Wsign-compare -Waddress \
+	-Waggregate-return -Wstrict-prototypes -Wmissing-prototypes \
+	-Wmissing-declarations -Wmissing-field-initializers \
+	-Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var \
+	-Wpointer-sign
+
+CPPFLAGS      := -Wa,-march=i686 -mtune=generic \
+	-Iinclude -Iarch/$(ARCH)/include \
+	-Iinclude/acpia -Iinclude/acpia/tools \
+	-include include/autoconf.h \
+	-fno-stack-protector -ffreestanding -O0 --no-builtin $(WARN_FLAGS) \
+	-nostdlib -nostdinc \
+	-D__KERNEL__
 
 #AS	      := as	
 #ASFLAGS	      := -march=i686  	
