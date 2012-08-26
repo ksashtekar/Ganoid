@@ -144,7 +144,10 @@
  *
  *****************************************************************************/
 
-#if defined(_LINUX) || defined(__linux__)
+#if defined(_GANOID)
+#include "acganoid.h"
+
+#elif defined(_LINUX) || defined(__linux__)
 #include "aclinux.h"
 
 #elif defined(__FreeBSD__) || defined(__FreeBSD_kernel__)

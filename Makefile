@@ -42,6 +42,9 @@ SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
 	         cpu.c kbd-handler.c sched.c process.c idle.c 	\
 		 pgfault.c utils.c
 
+include lib/Makefile
+
+
 TESTSRCS      := tests.c t_sprintf.c 
 
 ASMSRCS       := boot.S kernel.S vectors.S kbd.S cpu-id.S asm-utils.S
@@ -66,11 +69,11 @@ WARN_FLAGS := -Wall -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations \
 
 CPPFLAGS      := -Wa,-march=i686 -mtune=generic \
 	-Iinclude -Iarch/$(ARCH)/include \
-	-Iinclude/acpia -Iinclude/acpia/tools \
+	-Iinclude/acpi -Iinclude/acpia/tools \
 	-include include/autoconf.h \
 	-fno-stack-protector -ffreestanding -O0 --no-builtin $(WARN_FLAGS) \
 	-nostdlib -nostdinc \
-	-D__KERNEL__
+	-D__KERNEL__ -D_GANOID
 
 #AS	      := as	
 #ASFLAGS	      := -march=i686  	
