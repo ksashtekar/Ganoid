@@ -69,7 +69,8 @@ WARN_FLAGS := -Wall -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations \
 
 CPPFLAGS      := -Wa,-march=i686 -mtune=generic \
 	-Iinclude -Iarch/$(ARCH)/include \
-	-Iinclude/acpi -Iinclude/acpia/tools \
+	-Iinclude/acpi -Iinclude/acpi/tools \
+	-Iinclude/asm-generic \
 	-include include/autoconf.h \
 	-fno-stack-protector -ffreestanding -O0 --no-builtin $(WARN_FLAGS) \
 	-nostdlib -nostdinc \

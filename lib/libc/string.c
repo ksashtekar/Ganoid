@@ -1,5 +1,17 @@
 #include <ganoid/string.h>
 
+int memcmp(const void *s1, const void *s2, size_t n)
+{
+	const char *a1 = (const char *)s1, *a2 = (const char *)s2;
+	for (size_t i = 0; i < n; i++, a1++, a2++) {
+		int diff;
+		if ((diff = *a1 - *a2))
+			return diff;
+	}
+
+	return 0;
+}
+
 void *memset(void *s, int c, size_t n)
 {
 	char *p = s;
@@ -35,6 +47,32 @@ void *memmove(void *dest, const void *src, size_t n)
 	}
 
 	return dest;
+}
+
+int strcmp(const char *s1, const char *s2)
+{
+	for (; *s1; s1++, s2++) {
+		int diff;
+		if ((diff = *s1 - *s2))
+			return diff;
+	}
+
+	return 0;
+}
+
+int strncmp(const char *s1, const char *s2, size_t n)
+{
+	for (size_t i = 0; i < n; i++, s1++, s2++) {
+		int diff;
+		if ((diff = *s1 - *s2))
+			return diff;
+		if (!diff && !*s1) {
+			/* Case where both strings are exactly same */
+			return 0;
+		}
+	}
+
+	return 0;
 }
 
 char *strcpy(char *dest, const char *src)
