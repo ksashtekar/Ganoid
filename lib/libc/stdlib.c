@@ -193,3 +193,8 @@ unsigned long long int simple_strtoull(const char *nptr,
 
 	return num;
 }
+
+unsigned long int simple_strtoul(const char *nptr, char **endptr, int base)
+{
+	return (unsigned long)simple_strtoull(nptr, endptr, base);
+}

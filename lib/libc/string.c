@@ -100,7 +100,40 @@ char *strncpy(char *dest, const char *src, size_t n)
 		dest++;
 	}
 
+	while (n--) {
+		*dest++ = '\0';
+	}
+
 	return s_dest;
+}
+
+char *strcat(char *dest, const char *src)
+{
+	char *d = dest;
+	for ( ; *d; d++)
+		;
+	strcpy(d, src);
+	return dest;
+}
+
+char *strncat(char *dest, const char *src, size_t n)
+{
+	char *d = dest;
+	for (; *dest; dest++)
+		;
+
+	for (size_t i = 0; i < n; i++, dest++, src++) {
+		*dest = *src;
+		if (!*src)
+			break;
+	}
+
+	if (!*src) {
+		/* We did not break due to src over */
+		*dest = '\0';
+	}
+
+	return d;
 }
 
 size_t strlen(const char *s)

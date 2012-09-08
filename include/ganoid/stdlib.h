@@ -4,5 +4,6 @@
 int atoi(const char *nptr);
 unsigned long long int simple_strtoull(const char *nptr,
 				       char **endptr, int base);
+unsigned long int simple_strtoul(const char *nptr, char **endptr, int base);
 
 #endif /* _GANOID_STDLIB_H */
