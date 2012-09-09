@@ -68,7 +68,7 @@ static int detect_base(const char **npptr)
 		if (*nptr == 'x') {
 			nptr++;
 			/* Can be hex or garbage */
-			if (ishexdigit(*nptr))
+			if (isxdigit(*nptr))
 				base = 16;
 		} else if (isdigit(*nptr)) {
 			/* Is octal */
@@ -100,7 +100,7 @@ static int hex_process(const char **npptr)
 		}
 	}
 
-	if (ishexdigit(*nptr))
+	if (isxdigit(*nptr))
 		result = 0;
 
 	*npptr = nptr;
@@ -115,7 +115,7 @@ static bool is_correct_digit(char d, int base)
 		return isdigit(d);
 		break;
 	case 16:
-		return ishexdigit(d);
+		return isxdigit(d);
 		break;
 	case 2:
 		return d == '0' || d == '1';
