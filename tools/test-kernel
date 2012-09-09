@@ -1,0 +1,126 @@
+#!/bin/bash
+
+# This script helps the developer to test the compiled kernel on a
+# simulator. It will update the disk image /boot folder with the new
+# kernel. It uses the loopback mount mechanism for this It will then fire
+# up bochs.
+# After bochs is exited it will remove the kernel from the directory. One
+# problem which may occur during this is that newer distributions auto open
+# a GUI filemanager on the newly mounted directory. If this happens and the
+# developer does not close the newly opened window, I cannot umount the
+# diskimage and this will create issues. I will try to handle them in the
+# script.
+
+if [ "$USER" != "root" ]; then
+    echo "Warning: This script uses sudo prefix to some commands"
+    echo "Please ensure that you are in sudoer list !"
+fi
+
+# This is the kernel build dir. Currently this is same as the kernel source
+# tree root.
+BUILD_DIR=$1
+
+# This is the filename of the kernel image. I'm not hardcoding it as you
+# may have kernel version number appended to the kernel image filename.
+IMAGE_NAME=$2
+
+# This is the directory which has the disk image. I will mount this
+# diskimage to the locally created (in $TEST_DIR) directory. I will copy
+# the kernel in /boot of this directory. I will _not_ update the grub
+# configuration. Thats your job.
+TEST_DIR=$3
+
+# This is the disk image which should be present in $TEST_DIR. I will check
+# if it is present and complain if it is not.
+DISK_IMAGE=$4
+
+VERBOSE_SW="-v"
+LOOPBACK_DEVICE="/dev/loop0"
+
+function usage {
+    echo Usage: test-kernel build-dir image-name test-dir
+}
+
+# Above all parameters are mandatory and we have to check for them.
+if [ $# -lt 4 ]; then
+    usage
+    exit 1
+fi
+
+if [ ! -e $BUILD_DIR ]; then
+    echo "The directory $BUILD_DIR does not seem to be present. Aborting ..."
+    usage
+    exit 1
+fi
+
+IMAGE_PATH="$BUILD_DIR/$IMAGE_NAME"
+if [ ! -e $IMAGE_PATH ]; then
+    echo "The file $IMAGE_PATH does not seem to be present."
+    echo "Have you built your kernel ?"
+    usage
+    exit 1
+fi
+
+if [ ! -e $TEST_DIR ]; then
+    echo "The directory $TEST_DIR is not present."
+    echo "Please create one and put your disk image in it"
+    exit 1
+fi
+
+DISK_IMAGE_PATH="$TEST_DIR/$DISK_IMAGE"
+if [ ! -e $DISK_IMAGE_PATH ]; then
+    echo "No file by the name $DISK_IMAGE_PATH is present"
+    echo "Please ensure that you have your disk image @ the path $TEST_DIR"
+    exit 1
+fi
+
+LOOP_MNT_DIR="$TEST_DIR/loop_mnt"
+
+echo "Changing current dir to $TEST_DIR ..."
+cd $TEST_DIR
+CURRENT_IMG_MD5=`md5sum $IMAGE_PATH | awk '{print $1}'`
+LAST_RUN_FILE="last-run"
+if [ -e $LAST_RUN_FILE ]; then
+    LAST_RUN_MD5=`cat $LAST_RUN_FILE`
+    if [ "$CURRENT_IMG_MD5" = "$LAST_RUN_MD5" ]; then
+	echo "WARNING: Earlier image in the disk and current image looks same to me ..."
+	echo "You are testing the same kernel again"
+    else
+	echo $CURRENT_IMG_MD5 > $LAST_RUN_MD5
+    fi
+fi
+
+# Check and create the directory to mount the image
+mkdir -p $LOOP_MNT_DIR
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Unable to create directory $LOOP_MNT_DIR in $TEST_DIR"
+    exit 1
+fi
+
+DATA_OFFSET=32256
+sudo losetup $VERBOSE_SW -o $DATA_OFFSET $LOOPBACK_DEVICE $DISK_IMAGE_PATH
+if [ $? -ne 0 ]; then
+    echo "ERROR: Unable to do losetup on disk image"
+    sudo losetup $VERBOSE_SW -d $LOOPBACK_DEVICE
+    exit 1
+fi
+
+sudo mount $VERBOSE_SW -o loop $LOOPBACK_DEVICE $LOOP_MNT_DIR
+if [ $? -ne 0 ]; then
+    echo "ERROR: Unable to mount $LOOPBACK_DEVICE .."
+    sudo losetup $VERBOSE_SW -d $LOOPBACK_DEVICE
+    exit 1
+fi
+
+echo sudo cp $VERBOSE_SW $IMAGE_PATH $LOOP_MNT_DIR/boot
+if [ $? -ne 0 ]; then
+    echo "ERROR: Unable to copy kernel image $KERNEL_IMAGE to mounted dir"
+    sudo umount $VERBOSE_SW $LOOP_MNT_DIR
+    sudo losetup $VERBOSE_SW -d $LOOPBACK_DEVICE
+    exit 1
+fi
+
+sudo umount $VERBOSE_SW $LOOP_MNT_DIR
+sudo losetup $VERBOSE_SW -d $LOOPBACK_DEVICE
+bochs &> /dev/null

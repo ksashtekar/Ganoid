@@ -100,6 +100,8 @@ $(BIN): $(AUTOCONF_FILE) $(OBJS) $(ASMOBJS) $(TESTOBJS) $(DEPENDS) Makefile
 $(AUTOCONF_FILE): $(CONFIG_FILE)
 	@tools/autoconf $< $@
 
+test: $(BIN)
+	@tools/test-kernel `pwd` $(BIN) $(CONFIG_TEST_DIR) bigdisk.img
 
 %.o: %.c
 	@echo "CC  $(shell basename $<)"
