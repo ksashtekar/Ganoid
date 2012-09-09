@@ -28,7 +28,7 @@ export
 
 OUTDIR        := bin
 
-VERSION       := 0.0.1	
+VERSION       := 0.0.1
 ARCH          := i386
 LINKER_SCRIPT := arch/$(ARCH)/kernel/ganoid.ld
 
