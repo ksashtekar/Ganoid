@@ -52,6 +52,7 @@
 #include "acpi.h"
 #include "accommon.h"
 
+#if 0
 #include <stdio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -62,7 +63,7 @@
 #include <direct.h>
 #endif
 #include <errno.h>
-
+#endif /* 0 */
 
 /* O_BINARY is not always defined */
 #ifndef O_BINARY

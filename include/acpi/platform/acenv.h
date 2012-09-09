@@ -85,7 +85,7 @@
 #define ACPI_APPLICATION
 #define ACPI_FULL_DEBUG
 #define ACPI_MUTEX_DEBUG
-#define ACPI_DBG_TRACK_ALLOCATIONS
+/* #define ACPI_DBG_TRACK_ALLOCATIONS */
 #endif
 
 /* AcpiNames configuration. Single threaded with debugger output enabled. */

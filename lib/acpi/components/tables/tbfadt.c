@@ -77,7 +77,7 @@ AcpiTbSetupFadtRegisters (
 
 typedef struct acpi_fadt_info
 {
-    char                    *Name;
+    const char                    *Name;
     UINT16                  Address64;
     UINT16                  Address32;
     UINT16                  Length;

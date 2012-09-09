@@ -54,6 +54,7 @@
 #include "acparser.h"
 #include "acdebug.h"
 
+#if 0
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -62,7 +63,9 @@
 #include <semaphore.h>
 #include <pthread.h>
 #include <errno.h>
+#endif /* 0 */
 
+#if 0
 #define _COMPONENT          ACPI_OS_SERVICES
         ACPI_MODULE_NAME    ("osunixxf")
 
@@ -90,7 +93,7 @@ typedef void* (*PTHREAD_CALLBACK) (void *);
 #define sem_destroy         sem_close
 #endif
 
-
+#endif /* 0 */
 /******************************************************************************
  *
  * FUNCTION:    AcpiOsInitialize, AcpiOsTerminate
@@ -107,8 +110,9 @@ ACPI_STATUS
 AcpiOsInitialize (
     void)
 {
-
+#if 0
     AcpiGbl_OutputFile = stdout;
+#endif /* 0 */
     return (AE_OK);
 }
 
@@ -138,8 +142,9 @@ ACPI_PHYSICAL_ADDRESS
 AcpiOsGetRootPointer (
     void)
 {
-
+#if 0
     return (AeLocalGetRootPointer ());
+#endif /* 0 */
 }
 
 
@@ -162,13 +167,14 @@ AcpiOsPredefinedOverride (
     const ACPI_PREDEFINED_NAMES *InitVal,
     ACPI_STRING                 *NewVal)
 {
-
+#if 0
     if (!InitVal || !NewVal)
     {
         return (AE_BAD_PARAMETER);
     }
 
     *NewVal = NULL;
+#endif /* 0 */
     return (AE_OK);
 }
 
@@ -193,7 +199,7 @@ AcpiOsTableOverride (
     ACPI_TABLE_HEADER       *ExistingTable,
     ACPI_TABLE_HEADER       **NewTable)
 {
-
+#if 0
     if (!ExistingTable || !NewTable)
     {
         return (AE_BAD_PARAMETER);
@@ -209,6 +215,7 @@ AcpiOsTableOverride (
 
     return (AE_NO_ACPI_TABLES);
 #endif
+#endif /* 0 */
 }
 
 
@@ -255,8 +262,9 @@ void
 AcpiOsRedirectOutput (
     void                    *Destination)
 {
-
+#if 0
     AcpiGbl_OutputFile = Destination;
+#endif /* 0 */
 }
 
 
@@ -277,12 +285,14 @@ AcpiOsPrintf (
     const char              *Fmt,
     ...)
 {
+#if 0
     va_list                 Args;
 
 
     va_start (Args, Fmt);
     AcpiOsVprintf (Fmt, Args);
     va_end (Args);
+#endif /* 0 */
 }
 
 
@@ -304,6 +314,7 @@ AcpiOsVprintf (
     const char              *Fmt,
     va_list                 Args)
 {
+#if 0
     UINT8                   Flags;
 
 
@@ -330,6 +341,7 @@ AcpiOsVprintf (
     {
         vfprintf (AcpiGbl_OutputFile, Fmt, Args);
     }
+#endif /* 0 */
 }
 
 
@@ -353,6 +365,7 @@ AcpiOsGetLine (
     UINT32                  BufferLength,
     UINT32                  *BytesRead)
 {
+#if 0
     int                     Temp;
     UINT32                  i;
 
@@ -387,6 +400,7 @@ AcpiOsGetLine (
     {
         *BytesRead = i;
     }
+#endif /* 0 */
     return (AE_OK);
 }
 
@@ -409,8 +423,9 @@ AcpiOsMapMemory (
     ACPI_PHYSICAL_ADDRESS   where,
     ACPI_SIZE               length)
 {
-
+#if 0
     return (ACPI_TO_POINTER ((ACPI_SIZE) where));
+#endif /* 0 */
 }
 
 
@@ -454,11 +469,13 @@ void *
 AcpiOsAllocate (
     ACPI_SIZE               size)
 {
+#if 0
     void                    *Mem;
 
 
     Mem = (void *) malloc ((size_t) size);
     return (Mem);
+#endif /* 0 */
 }
 
 
@@ -478,8 +495,9 @@ void
 AcpiOsFree (
     void                    *mem)
 {
-
+#if 0
     free (mem);
+#endif /* 0 */
 }
 
 
@@ -548,6 +566,7 @@ AcpiOsCreateSemaphore (
     UINT32              InitialUnits,
     ACPI_HANDLE         *OutHandle)
 {
+#if 0
     sem_t               *Sem;
 
 
@@ -583,6 +602,7 @@ AcpiOsCreateSemaphore (
 #endif
 
     *OutHandle = (ACPI_HANDLE) Sem;
+#endif /* 0 */
     return (AE_OK);
 }
 
@@ -603,6 +623,7 @@ ACPI_STATUS
 AcpiOsDeleteSemaphore (
     ACPI_HANDLE         Handle)
 {
+#if 0
     sem_t               *Sem = (sem_t *) Handle;
 
 
@@ -615,7 +636,7 @@ AcpiOsDeleteSemaphore (
     {
         return (AE_BAD_PARAMETER);
     }
-
+#endif /* 0 */
     return (AE_OK);
 }
 
@@ -640,6 +661,7 @@ AcpiOsWaitSemaphore (
     UINT32              Units,
     UINT16              Timeout)
 {
+#if 0
     ACPI_STATUS         Status = AE_OK;
     sem_t               *Sem = (sem_t *) Handle;
     struct timespec     T;
@@ -712,6 +734,7 @@ AcpiOsWaitSemaphore (
     }
 
     return (Status);
+#endif /* 0 */
 }
 
 
@@ -733,6 +756,7 @@ AcpiOsSignalSemaphore (
     ACPI_HANDLE         Handle,
     UINT32              Units)
 {
+#if 0
     sem_t               *Sem = (sem_t *)Handle;
 
 
@@ -745,7 +769,7 @@ AcpiOsSignalSemaphore (
     {
         return (AE_LIMIT);
     }
-
+#endif /* 0 */
     return (AE_OK);
 }
 
@@ -764,8 +788,9 @@ ACPI_STATUS
 AcpiOsCreateLock (
     ACPI_SPINLOCK           *OutHandle)
 {
-
+#if 0
     return (AcpiOsCreateSemaphore (1, 1, OutHandle));
+#endif /* 0 */
 }
 
 
@@ -773,7 +798,7 @@ void
 AcpiOsDeleteLock (
     ACPI_SPINLOCK           Handle)
 {
-    AcpiOsDeleteSemaphore (Handle);
+	/* AcpiOsDeleteSemaphore (Handle); */
 }
 
 
@@ -781,7 +806,7 @@ ACPI_CPU_FLAGS
 AcpiOsAcquireLock (
     ACPI_HANDLE             Handle)
 {
-    AcpiOsWaitSemaphore (Handle, 1, 0xFFFF);
+	/* AcpiOsWaitSemaphore (Handle, 1, 0xFFFF); */
     return (0);
 }
 
@@ -791,7 +816,7 @@ AcpiOsReleaseLock (
     ACPI_SPINLOCK           Handle,
     ACPI_CPU_FLAGS          Flags)
 {
-    AcpiOsSignalSemaphore (Handle, 1);
+    /* AcpiOsSignalSemaphore (Handle, 1); */
 }
 
 
@@ -859,11 +884,12 @@ void
 AcpiOsStall (
     UINT32                  microseconds)
 {
-
+#if 0
     if (microseconds)
     {
         usleep (microseconds);
     }
+#endif /* 0 */
 }
 
 
@@ -883,13 +909,14 @@ void
 AcpiOsSleep (
     UINT64                  milliseconds)
 {
-
+#if 0
     sleep (milliseconds / 1000);    /* Sleep for whole seconds */
 
     /*
      * Arg to usleep() must be less than 1,000,000 (1 second)
      */
     usleep ((milliseconds % 1000) * 1000);      /* Sleep for remaining usecs */
+#endif /* 0 */
 }
 
 
@@ -909,6 +936,7 @@ UINT64
 AcpiOsGetTimer (
     void)
 {
+#if 0
     struct timeval          time;
 
 
@@ -917,6 +945,7 @@ AcpiOsGetTimer (
     /* Seconds * 10^7 = 100ns(10^-7), Microseconds(10^-6) * 10^1 = 100ns */
 
     return (((UINT64) time.tv_sec * 10000000) + ((UINT64) time.tv_usec * 10));
+#endif /* 0 */
 }
 
 
@@ -1204,11 +1233,13 @@ ACPI_THREAD_ID
 AcpiOsGetThreadId (
     void)
 {
+#if 0
     pthread_t               thread;
 
 
     thread = pthread_self();
     return (ACPI_CAST_PTHREAD_T (thread));
+#endif /* 0 */
 }
 
 
@@ -1232,6 +1263,7 @@ AcpiOsExecute (
     ACPI_OSD_EXEC_CALLBACK  Function,
     void                    *Context)
 {
+#if 0
     pthread_t               thread;
     int                     ret;
 
@@ -1241,6 +1273,7 @@ AcpiOsExecute (
     {
         AcpiOsPrintf("Create thread failed");
     }
+#endif /* 0 */
     return (0);
 }
 

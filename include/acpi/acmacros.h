@@ -528,9 +528,9 @@
 
 /* Memory allocation */
 
-#define ACPI_ALLOCATE(a)            AcpiUtAllocate((ACPI_SIZE) (a), ACPI_MEM_PARAMETERS)
-#define ACPI_ALLOCATE_ZEROED(a)     AcpiUtAllocateZeroed((ACPI_SIZE) (a), ACPI_MEM_PARAMETERS)
-#define ACPI_FREE(a)                AcpiOsFree(a)
+/* #define ACPI_ALLOCATE(a)            AcpiUtAllocate((ACPI_SIZE) (a), ACPI_MEM_PARAMETERS) */
+/* #define ACPI_ALLOCATE_ZEROED(a)     AcpiUtAllocateZeroed((ACPI_SIZE) (a), ACPI_MEM_PARAMETERS) */
+/* #define ACPI_FREE(a)                AcpiOsFree(a) */
 #define ACPI_MEM_TRACKING(a)
 
 #else

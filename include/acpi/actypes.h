@@ -44,6 +44,8 @@
 #ifndef __ACTYPES_H__
 #define __ACTYPES_H__
 
+#include <platform/acenv.h>
+
 /* acpisrc:StructDefs -- for acpisrc conversion */
 
 /*

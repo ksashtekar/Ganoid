@@ -49,6 +49,7 @@
 #define ACPI_USE_SYSTEM_CLIBRARY
 #define ACPI_USE_DO_WHILE_0
 #define ACPI_MUTEX_TYPE             ACPI_BINARY_SEMAPHORE
+#define ACPI_USE_LOCAL_CACHE
 
 
 #ifdef __KERNEL__
@@ -61,7 +62,12 @@
 #include <linux/ctype.h>
 #include <linux/sched.h>
 #endif /* 0 */
-#include <asm/system.h>
+#include <asm-generic/system.h>
+#include <ganoid/types.h>
+#include <ganoid/console.h>
+#include <stdarg.h>
+#include <ganoid/string.h>
+#include <ganoid/ctype.h>
 #if 0
 #include <asm/atomic.h>
 #include <asm/div64.h>
@@ -77,8 +83,8 @@
 #define ACPI_EXPORT_SYMBOL(symbol)  EXPORT_SYMBOL(symbol);
 #define strtoul                     simple_strtoul
 
-#define ACPI_CACHE_T                struct kmem_cache
-#define ACPI_SPINLOCK               spinlock_t *
+//#define ACPI_CACHE_T                void
+#define ACPI_SPINLOCK               void *
 #define ACPI_CPU_FLAGS              unsigned long
 
 #else /* !__KERNEL__ */
@@ -88,8 +94,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
-
-/* Host-dependent types and defines for user-space ACPICA */
 
 #define ACPI_FLUSH_CPU_CACHE()
 
@@ -116,6 +120,15 @@
 
 #include "acgcc.h"
 
+#define ACPI_DIV_64_BY_32(...)						\
+	do {								\
+		printk("ACPI_DIV_64_BY_32 needs to be defined\n");	\
+	} while(0);
+
+#define ACPI_SHIFT_RIGHT_64(...)					\
+	do {								\
+		printk("ACPI_SHIFT_RIGHT_64 needs to be defined\n");	\
+	} while(0);
 
 #ifdef __KERNEL__
 /*
@@ -123,10 +136,13 @@
  */
 static inline acpi_thread_id acpi_os_get_thread_id(void)
 {
-	printf("%s not implemented yet\n", __func__);
+	printk("%s not implemented yet\n", __func__);
 	while(1){}
     /* return current; */
+	return 0;
 }
+
+typedef unsigned int acpi_size;
 
 /*
  * The irqs_disabled() check is for resume from RAM.
@@ -137,37 +153,41 @@ static inline acpi_thread_id acpi_os_get_thread_id(void)
 #include <acpi/actypes.h>
 static inline void *acpi_os_allocate(acpi_size size)
 {
-	printf("%s not implemented yet\n", __func__);
+	printk("%s not implemented yet. Size: %d\n", __func__, size);
 	while(1){}
 	/* return kmalloc(size, irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL); */
+	return NULL;
 }
 
 static inline void *acpi_os_allocate_zeroed(acpi_size size)
 {
-	printf("%s not implemented yet\n", __func__);
+	printk("%s not implemented yet. Size: %d\n", __func__, size);
 	while(1){}
 	/* return kzalloc(size, irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL); */
+	return NULL;
 }
 
+#if 0 /* Does'nt seem to be used anywhere */
 static inline void *acpi_os_acquire_object(acpi_cache_t * cache)
 {
-	printf("%s not implemented yet\n", __func__);
-	while(1){}
-    /* return kmem_cache_zalloc(cache, */
-    /*     irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL); */
+	return kmem_cache_zalloc(cache,
+        irqs_disabled() ? GFP_ATOMIC : GFP_KERNEL);
+	return NULL;
 }
+#endif /* 0 */
 
 #define ACPI_ALLOCATE(a)        acpi_os_allocate(a)
 #define ACPI_ALLOCATE_ZEROED(a) acpi_os_allocate_zeroed(a)
-#define ACPI_FREE(a)            kfree(a)
+#define ACPI_FREE(a)            /* kfree(a) */
 
 /* Used within ACPICA to show where it is safe to preempt execution */
-
+#if 0 /* Does'nt seem to be used anywhere */
 #define ACPI_PREEMPTION_POINT() \
     do { \
-        /* if (!irqs_disabled()) \ */
-        /*     cond_resched(); \ */
+        if (!irqs_disabled()) \
+            cond_resched(); \
     } while (0)
+#endif /* 0 */
 
 #endif /* __KERNEL__ */
 

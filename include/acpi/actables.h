@@ -174,7 +174,7 @@ AcpiTbCopyDsdt (
 void
 AcpiTbInstallTable (
     ACPI_PHYSICAL_ADDRESS   Address,
-    char                    *Signature,
+    const char                    *Signature,
     UINT32                  TableIndex);
 
 ACPI_STATUS

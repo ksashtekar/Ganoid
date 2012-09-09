@@ -42,7 +42,7 @@
  * POSSIBILITY OF SUCH DAMAGES.
  */
 
-
+#if 0
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,12 +50,13 @@
 #include <fnmatch.h>
 #include <ctype.h>
 #include <sys/stat.h>
-
+#endif /* 0 */
 #include "acpisrc.h"
 
 /*
  * Allocated structure returned from OsOpenDirectory
  */
+#if 0
 typedef struct ExternalFindInfo
 {
     char                        *DirPathname;
@@ -65,6 +66,7 @@ typedef struct ExternalFindInfo
     char                        RequestedFileType;
 
 } EXTERNAL_FIND_INFO;
+#endif /* 0 */
 
 
 /*******************************************************************************
@@ -87,6 +89,7 @@ AcpiOsOpenDirectory (
     char                    *WildcardSpec,
     char                    RequestedFileType)
 {
+#if 0
     EXTERNAL_FIND_INFO      *ExternalInfo;
     DIR                     *dir;
 
@@ -115,6 +118,7 @@ AcpiOsOpenDirectory (
     ExternalInfo->DirPathname = DirPathname;
     ExternalInfo->DirPtr = dir;
     return (ExternalInfo);
+#endif /* 0 */
 }
 
 
@@ -135,6 +139,7 @@ char *
 AcpiOsGetNextFilename (
     void                    *DirHandle)
 {
+#if 0
     EXTERNAL_FIND_INFO      *ExternalInfo = DirHandle;
     struct dirent           *dir_entry;
     char                    *temp_str;
@@ -187,7 +192,7 @@ AcpiOsGetNextFilename (
             }
         }
     }
-
+#endif /* 0 */
     return (NULL);
 }
 
@@ -208,6 +213,7 @@ void
 AcpiOsCloseDirectory (
     void                    *DirHandle)
 {
+#if 0
     EXTERNAL_FIND_INFO      *ExternalInfo = DirHandle;
 
 
@@ -215,6 +221,7 @@ AcpiOsCloseDirectory (
 
     closedir (ExternalInfo->DirPtr);
     free (DirHandle);
+#endif /* 0 */
 }
 
 
@@ -236,6 +243,7 @@ char *
 strlwr  (
    char         *str)
 {
+#if 0
     int         length;
     int         i;
 
@@ -246,6 +254,6 @@ strlwr  (
     {
         str[i] = tolower ((int) str[i]);
     }
-
+#endif /* 0 */
     return (str);
 }
