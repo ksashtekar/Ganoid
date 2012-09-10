@@ -5,3 +5,10 @@ config TEST_DIR
        prompt "Path to test directory"
        help
 		Enter the path to your test directory. The test directory should contain the disk image.
+
+
+config ENABLE_ACPI
+       bool
+       prompt "Enable ACPI"
+       help
+		ACPI is not functional now. This switch is to be enabled only for ACPI development

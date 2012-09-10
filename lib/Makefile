@@ -1,4 +1,7 @@
 
 include lib/libc/Makefile
-include lib/acpi/Makefile
+
+ifeq ($(CONFIG_ENABLE_ACPI), y)
+ include lib/acpi/Makefile
+endif # CONFIG_ENABLE_ACPI
 
