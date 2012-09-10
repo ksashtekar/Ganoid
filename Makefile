@@ -60,12 +60,16 @@ DEPENDS       += $(patsubst %.c,.%.d,$(TESTSRCS))
 BIN           := ganoid-$(VERSION)
 
 WARN_FLAGS := -Wall -Wextra -Wundef -Wshadow -Wunsafe-loop-optimizations \
-	 -Wpointer-arith -Wbad-function-cast -Wcast-qual \
+	 -Wpointer-arith -Wbad-function-cast \
 	-Wwrite-strings -Wconversion -Wsign-compare -Waddress \
 	-Waggregate-return -Wstrict-prototypes -Wmissing-prototypes \
 	-Wmissing-declarations -Wmissing-field-initializers \
 	-Wmissing-noreturn -Wunreachable-code -Winline -Wvolatile-register-var \
 	-Wpointer-sign
+
+# Enable this locally for extra non-default warnings
+# WARN_FLAGS += -Wcast-qual
+
 
 CPPFLAGS      := -Wa,-march=i686 -mtune=generic \
 	-Iinclude -Iarch/$(ARCH)/include \

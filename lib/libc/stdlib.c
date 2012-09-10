@@ -183,7 +183,7 @@ unsigned long long int simple_strtoull(const char *nptr,
 	}
 
 	if (endptr)
-		*endptr = nptr;
+		*endptr = (char *)nptr;
 
 	if (neg_sign) {
 		/* two's complement */
