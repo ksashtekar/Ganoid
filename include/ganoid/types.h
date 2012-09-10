@@ -19,6 +19,8 @@ typedef unsigned char uchar;
 typedef unsigned bool;
 typedef int pid_t;
 
+typedef unsigned acpi_thread_id;
+
 #define NULL ((void*)0)
 
 #define MAX_UINT ~(u32)0x00

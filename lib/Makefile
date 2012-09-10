@@ -1,19 +1,7 @@
 
+include lib/libc/Makefile
 
-
-SRCS =  
-OBJS = $(patsubst %.c,%.o,$(SRCS))
-
-
-#ifdef XXXX
-#endif
-
-
-all: dummy
-
-
-
-
-dummy:
-
+ifeq ($(CONFIG_ENABLE_ACPI), y)
+ include lib/acpi/Makefile
+endif # CONFIG_ENABLE_ACPI
 
