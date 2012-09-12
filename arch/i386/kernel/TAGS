@@ -1,32 +1,0 @@
-
-Makefile,389
-LINKER_SCRIPT = Ufeox.ldLINKER_SCRIPT3,45
-SRCS = common.c monitor.c vga.cSRCS5,71
-HEADERS = common.h monitor.h vga.hHEADERS6,103
-ASMSRCS = boot.SASMSRCS8,139
-OBJS = $(patsubst %.c,%.o,$(SRCS))OBJS11,158
-ASMOBJS = $(patsubst %.S,%.o,$(ASMSRCS))ASMOBJS12,193
-BIN = Ufeox-0.0.1.imgBIN16,254
-CC = gccCC17,276
-CPPFLAGS = -Wall -I../include -fno-stack-protector	CPPFLAGS18,285
-
-monitor.c,27
-void cmain ()cmain13,156
-
-common.c,165
-void outb (unsigned short port, unsigned char value)outb3,21
-unsigned char inb (unsigned short port)inb8,137
-unsigned short inw (unsigned short port)inw15,271
-
-vga.c,204
-int ReadRegister (unsigned short aPortAddressIndex,ReadRegister8,96
-int WriteRegister (unsigned short aPortAddressIndex,WriteRegister21,381
-int SetBit (unsigned short aPortAddressIndex,SetBit31,611
-
-boot.S,162
-#define ASM 1ASM19,745
-start:start28,818
-_start:_start29,825
-multiboot_entry:multiboot_entry56,1627
-loop:loop75,1971
-halt_message:halt_message79,1993
