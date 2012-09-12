@@ -113,7 +113,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo sudo cp $VERBOSE_SW $IMAGE_PATH $LOOP_MNT_DIR/boot
+sudo cp $VERBOSE_SW $IMAGE_PATH $LOOP_MNT_DIR/boot
 if [ $? -ne 0 ]; then
     echo "ERROR: Unable to copy kernel image $KERNEL_IMAGE to mounted dir"
     sudo umount $VERBOSE_SW $LOOP_MNT_DIR
