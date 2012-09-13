@@ -27,6 +27,8 @@ char *itoa(int value, char *str, unsigned base, int unsignedvalue,
 	   int fieldwidth);
 int printk(const char *fmt, ...);
 
+extern bool debug_printk;
+
 #define ENTER_CRITICAL_SECTION  unsigned int ___eflags_ = disable_interrupts()
 #define EXIT_CRITICAL_SECTION   restore_interrupts(___eflags_)
 

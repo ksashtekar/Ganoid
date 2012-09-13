@@ -24,8 +24,6 @@ static struct multiboot_mmap_entry mboot_mmap[ADDR_MAP_NODE_CNT];
 static struct bios_drive_info drive_info[DRIVE_INFO_NODE_CNT];
 static ram_map_t ram_map[ADDR_MAP_NODE_CNT];
 
-// ~temp
-extern int debug_printk;
 static unsigned ram_nodes_cnt;
 
 static void parse_mboot_information(void)

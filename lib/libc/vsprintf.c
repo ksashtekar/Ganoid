@@ -15,7 +15,7 @@
 
 #define isdigit(c) ((c >= '0') && (c <= '9'))
 
-int debug_printk = 0;
+bool debug_printk;
 
 /* ignoring base for now. */
 char *itoa(int value, char *str, unsigned base, int unsignedvalue,
@@ -165,6 +165,11 @@ void realize_string(char **buf, int flags __attribute__ ((unused)),
 		val = va_arg(*vl, int);
 		itoa(val, str, 10, 0, fieldwidth);
 		break;
+	case 'p':
+		strcpy(str, "0x");
+		val = va_arg(*vl, int);
+		itoa(val, &str[2], 16, 1, fieldwidth);
+		break;
 	case 'x':
 		val = va_arg(*vl, int);
 		itoa(val, str, 16, 1, fieldwidth);
@@ -206,6 +211,7 @@ int get_conv_specifier(const char *fmt)
 	case 'u':
 	case 'x':
 	case 'X':
+	case 'p':
 	case 'c':
 	case 's':
 		retval = *fmt;
