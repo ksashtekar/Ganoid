@@ -40,7 +40,7 @@ SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c  \
 	         sysinfo.c kdebug.c page.c constants.c   \
 	         cpu.c kbd-handler.c sched.c process.c idle.c 	\
-		 pgfault.c utils.c
+		 pgfault.c utils.c ganoid-acpi.c
 
 include lib/Makefile
 
@@ -116,12 +116,14 @@ test: $(BIN)
 	$(CC) $(CPPFLAGS) -o $(OUTDIR)/$@ $<
 
 .%.d: %.c
+	@echo "DEP $(shell basename $<)"
 	@set -e; rm -f $@; \
 	$(CC) -M $(CPPFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
 .%.d: %.S
+	@echo "DEP $(shell basename $<)"
 	set -e; rm -f $@; \
 	$(CC) -M $(CPPFLAGS) $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
