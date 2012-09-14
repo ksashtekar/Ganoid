@@ -142,9 +142,11 @@ ACPI_PHYSICAL_ADDRESS
 AcpiOsGetRootPointer (
     void)
 {
-#if 0
-    return (AeLocalGetRootPointer ());
-#endif /* 0 */
+	/* fixme: This works only on IA32 systems. Implementation for other
+	   systems till pending */
+	ACPI_SIZE ptr;
+	AcpiFindRootPointer(&ptr);
+	return ptr;
 }
 
 
@@ -423,9 +425,9 @@ AcpiOsMapMemory (
     ACPI_PHYSICAL_ADDRESS   where,
     ACPI_SIZE               length)
 {
-#if 0
-    return (ACPI_TO_POINTER ((ACPI_SIZE) where));
-#endif /* 0 */
+	/* fixme: Check this later when paging is enabled */
+	return (void*)where;
+	/* (ACPI_TO_POINTER ((ACPI_SIZE) where)); */
 }
 
 

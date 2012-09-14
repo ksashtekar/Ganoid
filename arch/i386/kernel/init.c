@@ -52,6 +52,7 @@ int kernel_main()
 	init_timer(HZ);
 	add_isr_handler(TIMER_INTERRUPT, timer_isr);
 
+	init_acpi();
 	/* asm volatile ("sti"); */
 
 	/*

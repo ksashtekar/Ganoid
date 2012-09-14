@@ -149,14 +149,18 @@ AcpiInitializeTables (
     RsdpAddress = AcpiOsGetRootPointer ();
     if (!RsdpAddress)
     {
+	    printk("acpi: could not find RSDP address.\n");
         return_ACPI_STATUS (AE_NOT_FOUND);
     }
+
+    printk("RSDP address: %p\n", RsdpAddress);
 
     /*
      * Get the root table (RSDT or XSDT) and extract all entries to the local
      * Root Table Array. This array contains the information of the RSDT/XSDT
      * in a common, more useable format.
      */
+    printk("Parsing root table\n");
     Status = AcpiTbParseRootTable (RsdpAddress);
     return_ACPI_STATUS (Status);
 }
