@@ -52,7 +52,9 @@ int kernel_main()
 	init_timer(HZ);
 	add_isr_handler(TIMER_INTERRUPT, timer_isr);
 
+#ifdef CONFIG_ENABLE_ACPI
 	init_acpi();
+#endif /* CONFIG_ENABLE_ACPI */
 	/* asm volatile ("sti"); */
 
 	/*
