@@ -5,6 +5,6 @@
 cscope.*
 .emacs.*
 *~
-ganoid-*
+ganoid-0.0.1
 include/autoconf.h
 .config*
