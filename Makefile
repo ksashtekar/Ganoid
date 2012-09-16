@@ -40,7 +40,7 @@ SRCS          := init.c common.c vga.c vsprintf.c clib.c     \
                  gdt.c idt.c isr.c apic.c timer.c paging.c  \
 	         sysinfo.c kdebug.c page.c constants.c   \
 	         cpu.c kbd-handler.c sched.c process.c idle.c 	\
-		 pgfault.c utils.c ganoid-acpi.c
+		 pgfault.c utils.c ganoid-acpi.c heap.c
 
 include lib/Makefile
 

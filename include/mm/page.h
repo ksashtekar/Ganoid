@@ -10,4 +10,7 @@ void init_page_allocator(void);
 void* get_free_pages(unsigned count);
 void free_page(void *ptr);
 
+/* Debug function */
+void dump_free_info(void);
+
 #endif // __PAGE_H__

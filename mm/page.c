@@ -36,12 +36,11 @@
  * pages at once. The user has to free each page indivisually.
  */
 
-#define DEBUG_PAGE_ALLOC
-#ifdef DEBUG_PAGE_ALLOC
+#ifdef CONFIG_PAGE_ALLOC_DEBUG
 #define MDEBUG printk
-#else /* ! DEBUG_PAGE_ALLOC */
+#else /* ! CONFIG_PAGE_ALLOC_DEBUG */
 #define MDEBUG(...)
-#endif /* DEBUG_PAGE_ALLOC */
+#endif /* CONFIG_PAGE_ALLOC_DEBUG */
 
 #define GET_PAGENO(a) (unsigned)((unsigned)a)/PAGE_SIZE
 
@@ -118,7 +117,7 @@ static unsigned find_first_free(unsigned *bit, unsigned from)
 	bool free_bit_found = FALSE;
 
 	unsigned i;
-	for (i = from; i; index++, mask = 0x1) {
+	for (i = from; i < NUM_FRAMES; index++, mask = 0x1) {
 		for (; mask; mask = mask << 1, i++) {
 			if (!(free_bm[index] & mask)) {
 				free_bit_found = TRUE;
@@ -177,8 +176,7 @@ static int find_free_bits_range(unsigned count, unsigned *start_bit)
 		return 1;
 }
 
-static void dump_free_info(void) __attribute__ ((unused));
-static void dump_free_info(void)
+void dump_free_info(void)
 {
 	unsigned bit;
 
@@ -187,12 +185,13 @@ static void dump_free_info(void)
 	bool init_value = fp_getbit(start);
 	for (bit = 1; bit <= LAST_BIT_NO; bit++) {
 		if ((fp_getbit(bit) != init_value) || (bit == LAST_BIT_NO)) {
-			MDEBUG("0x%x to 0x%x :: ",
+			MDEBUG("0x%8x to 0x%8x :: ",
 			       PAGENO_TO_ADDR(start), PAGENO_TO_ADDR(bit) - 1);
-			if (init_value)
-				MDEBUG("Allocated. Size: ");
-			else
-				MDEBUG("Free. Size: ");
+			if (init_value) {
+				MDEBUG("Busy - Size: ");
+			} else {
+				MDEBUG("Free - Size: ");
+			}
 			print_human_readable_size(PAGENO_TO_ADDR(bit) -
 						  PAGENO_TO_ADDR(start));
 			start = bit;
@@ -200,8 +199,6 @@ static void dump_free_info(void)
 		}
 	}
 	MDEBUG("Done\n");
-	while (1) {
-	}
 }
 
 /**
@@ -259,7 +256,10 @@ void init_page_allocator()
 					  GET_PAGENO(next_block_addr - 1));
 		}
 	}
-	//    dump_free_info();    
+
+#ifdef CONFIG_PAGE_ALLOC_DEBUG
+	dump_free_info();
+#endif /* CONFIG_PAGE_ALLOC_DEBUG */
 }
 
 void *get_free_pages(unsigned count)
@@ -267,10 +267,18 @@ void *get_free_pages(unsigned count)
 	unsigned start_bit;
 
 	int r = find_free_bits_range(count, &start_bit);
-	if (r != 0)
+	if (r != 0) {
+#ifdef CONFIG_PAGE_ALLOC_DEBUG
+		printk("page: No free bits found: C: %d\n", count);
+#endif /* CONFIG_PAGE_ALLOC_DEBUG */
 		return NULL;
+	}
 
 	unsigned last_bit_no = start_bit + count - 1;
+#ifdef CONFIG_PAGE_ALLOC_DEBUG
+	printk("page: setbit %d - %d\n", start_bit, last_bit_no);
+#endif /* CONFIG_PAGE_ALLOC_DEBUG */
+
 	fp_setbit_range(start_bit, last_bit_no);
 
 	return (void *)PAGENO_TO_ADDR(start_bit);;

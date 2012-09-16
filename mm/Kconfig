@@ -1,0 +1,6 @@
+config PAGE_ALLOC_DEBUG
+       bool "Enable debug for page alloc"
+       default n
+       help
+	Enable debug prints
+
