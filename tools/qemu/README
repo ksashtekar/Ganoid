@@ -1,0 +1,22 @@
+
+R E A D M E
+===========
+
+To use qemu based kernel bootup method:
+
+Installations:
+
+1. Make sure following packages are installed -
+   a. qemu
+   b. qemu-kvm
+   c. qemu-kvm-extras
+2. If your development machine cpu supports hardware virtualization then enable it in bios -
+   a. To verify this do `cat /proc/cpuinfo | grep -E "vmx|svm"`
+   b. See if it is disabled, `dmesg | grep kvm`
+   c. If step (b) suggests that virtualization is disabled then enable it in bios
+3. To use grub bootloader based method use script qemu_grub.sh
+4. To use mboot bootloader based method use script qemu_mboot.sh
+
+The wrapper scripts creates disk image and copies ganoid kernel image into it and boots using qemu.
+
+Ref: http://wiki.qemu.org/Main_Page 
